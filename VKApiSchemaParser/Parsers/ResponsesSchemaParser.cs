@@ -17,25 +17,25 @@ namespace VKApiSchemaParser.Parsers
             {
                 SchemaVersion = RawSchema.SchemaVersion,
                 Title = RawSchema.Title,
-                Responses = definitions.Select(d => GetResponse(d.First, d.Path.FormatAsName()))
+                Responses = definitions.Select(d => GetResponse(d.First, d.Path))
             };
         }
 
-        private ApiResponse GetResponse(JToken token, string name)
+        private ApiResponse GetResponse(JToken token, string originalName)
         {
             return new ApiResponse
             {
-                Name = name,
-                Type = token.GetString(StringConstants.Type),
-                Object = GetResponseObject(token, name),
+                Name = originalName.FormatAsName(),
+                Type = SharedTypesParser.ParseType(token.GetString(StringConstants.Type)),
+                Object = GetResponseObject(token, originalName),
                 AdditionalProperties = token.GetBoolean(StringConstants.AdditionalProperties) == true
             };
         }
 
-        private ApiObject GetResponseObject(JToken token, string name)
+        private ApiObject GetResponseObject(JToken token, string originalName)
         {
             var objectSchema = token[StringConstants.Properties][StringConstants.Response];
-            return objectSchema != null ? SharedObjectsParser.ParseObject(objectSchema, name) : null;
+            return objectSchema != null ? SharedObjectsParser.ParseObject(objectSchema, originalName) : null;
         }
     }
 }

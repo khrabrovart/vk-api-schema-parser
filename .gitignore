@@ -1,2 +1,4 @@
 VKApiSchemaParser/bin/
 VKApiSchemaParser/obj/
+CitrinaCodeGen/
+.vs/

@@ -39,7 +39,9 @@ namespace VKApiSchemaParser.Parsers
                 Name = c.GetString(StringConstants.Name).FormatAsName(),
                 Description = c.GetString(StringConstants.Description),
                 AccessTokenTypes = GetAccessTokenTypes(c),
-                Parameters = GetMethodParameters(c)
+                Parameters = GetMethodParameters(c),
+                Errors = null,
+                Responses = null
             });
         }
 
@@ -49,16 +51,16 @@ namespace VKApiSchemaParser.Parsers
             {
                 switch (c.ToString())
                 {
-                    case "user":
+                    case StringConstants.User:
                         return ApiAccessTokenType.User;
 
-                    case "open":
+                    case StringConstants.Open:
                         return ApiAccessTokenType.Open;
 
-                    case "service":
+                    case StringConstants.Service:
                         return ApiAccessTokenType.Service;
 
-                    case "group":
+                    case StringConstants.Group:
                         return ApiAccessTokenType.Group;
 
                     default:
@@ -71,7 +73,7 @@ namespace VKApiSchemaParser.Parsers
         {
             return token.UseValueOrDefault(StringConstants.Items, t => new ApiMethodParameterItems
             {
-                Type = token.GetString(StringConstants.Type),
+                Type = SharedTypesParser.ParseType(token.GetString(StringConstants.Type)),
                 Minimum = t.GetInteger(StringConstants.Minimum),
                 Enum = t.GetArray(StringConstants.Enum)?.Select(item => item.FormatAsName())
             });
@@ -83,7 +85,7 @@ namespace VKApiSchemaParser.Parsers
             {
                 Name = p.GetString(StringConstants.Name).FormatAsName(),
                 Description = p.GetString(StringConstants.Description),
-                Type = p.GetString(StringConstants.Type),
+                Type = SharedTypesParser.ParseType(p.GetString(StringConstants.Type)),
                 Minimum = p.GetInteger(StringConstants.Minimum),
                 Maximum = p.GetInteger(StringConstants.Maximum),
                 Default = p.GetInteger(StringConstants.Default),

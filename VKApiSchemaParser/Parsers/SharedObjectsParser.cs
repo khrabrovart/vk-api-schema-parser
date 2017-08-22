@@ -8,17 +8,18 @@ namespace VKApiSchemaParser.Parsers
 {
     internal static class SharedObjectsParser
     {
-        public static ApiObject ParseObject(JToken token, string name = null)
+        public static ApiObject ParseObject(JToken token, string originalName = null)
         {
             return new ApiObject
             {
-                Name = name,
-                Type = token.GetString(StringConstants.Type),
+                Name = originalName.FormatAsName(),
+                OriginalName = originalName,
+                Type = SharedTypesParser.ParseType(token.GetString(StringConstants.Type)),
                 Properties = GetObjectProperties(token, token.GetArray(StringConstants.Required)?.Select(p => p.FormatAsName())),
                 AdditionalProperties = token.GetBoolean(StringConstants.AdditionalProperties) == true,
                 AllOf = token.UseValueOrDefault(StringConstants.AllOf, t => t?.Select(ao => ParseObject(ao))),
-                OneOf = token.UseValueOrDefault(StringConstants.OneOf, t => t?.Select(ao => ParseObject(ao))),
-                Reference = token.GetString(StringConstants.Reference)
+                OneOf = token.UseValueOrDefault(StringConstants.OneOf, t => t?.Select(oo => ParseObject(oo))),
+                Reference = ParseReference(token.GetString(StringConstants.Reference))
             };
         }
 
@@ -39,22 +40,29 @@ namespace VKApiSchemaParser.Parsers
 
         private static ApiObjectProperty ParseObjectProperty(JToken token)
         {
-            var objectPropertyItems = token.UseValueOrDefault(StringConstants.Items, ParseObjectProperty);
+            if (token == null)
+            {
+                return null;
+            }
 
-            string objectPropertyReference = token.UseValueOrDefault(StringConstants.Reference,
-                t => objectPropertyReference = t.ToString().Split('/').LastOrDefault()?.FormatAsName());
+            var objectPropertyItems = token.UseValueOrDefault(StringConstants.Items, ParseObjectProperty);
 
             return new ApiObjectProperty
             {
                 Name = token.Path.Split('.').Last().FormatAsName(),
                 Description = token.GetString(StringConstants.Description),
-                Type = token.GetString(StringConstants.Type),
+                Type = SharedTypesParser.ParseType(token.GetString(StringConstants.Type)),
                 Minimum = token.GetInteger(StringConstants.Minimum),
                 Enum = token.GetArray(StringConstants.Enum)?.Select(item => item.FormatAsName()),
                 EnumNames = token.GetArray(StringConstants.EnumNames)?.Select(item => item.FormatAsName()),
                 Items = objectPropertyItems,
-                Reference = objectPropertyReference
+                Reference = ParseReference(token.GetString(StringConstants.Reference))
             };
+        }
+
+        private static string ParseReference(string referenceString)
+        {
+            return string.IsNullOrWhiteSpace(referenceString) ? null : referenceString.Split('/').LastOrDefault()?.FormatAsName();
         }
     }
 }

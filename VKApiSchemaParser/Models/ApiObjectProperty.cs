@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace VKApiSchemaParser.Models
 {
     public class ApiObjectProperty
     {
         public string Name { get; set; }
+        public string OriginalName { get; set; }
         public string Description { get; set; }
-        public string Type { get; set; }
+        public ApiObjectType Type { get; set; }
         public int? Minimum { get; set; }
         public IEnumerable<string> Enum { get; set; }
         public IEnumerable<string> EnumNames { get; set; }

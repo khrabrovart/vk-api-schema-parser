@@ -16,7 +16,7 @@ namespace VKApiSchemaParser.Parsers
             {
                 SchemaVersion = RawSchema.SchemaVersion,
                 Title = RawSchema.Title,
-                Objects = definitions.Select(d => SharedObjectsParser.ParseObject(d.First, d.Path.FormatAsName()))
+                Objects = definitions.Select(d => SharedObjectsParser.ParseObject(d.First, d.Path))
             };
         }
     }

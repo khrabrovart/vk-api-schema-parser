@@ -6,7 +6,7 @@ namespace VKApiSchemaParser.Models
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public string Type { get; set; }
+        public ApiObjectType Type { get; set; }
         public int? Minimum { get; set; }
         public int? Default { get; set; }
         public int? Maximum { get; set; }
