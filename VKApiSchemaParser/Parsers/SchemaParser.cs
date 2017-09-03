@@ -8,7 +8,7 @@ namespace VKApiSchemaParser.Parsers
         protected abstract string CurrentSchemaUrl { get; }
         protected JSchema RawSchema { get; private set; }
 
-        private T _parsedSchema;
+        private static T _parsedSchema;
 
         public async Task<T> GetAsync()
         {

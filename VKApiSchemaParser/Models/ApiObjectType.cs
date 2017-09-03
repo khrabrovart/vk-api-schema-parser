@@ -8,6 +8,7 @@
         Object,
         Array,
         Number,
+        Multiple,
         Undefined
     }
 }

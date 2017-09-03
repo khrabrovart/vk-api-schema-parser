@@ -1,6 +1,6 @@
 ﻿namespace VKApiSchemaParser.Parsers
 {
-    internal static class StringConstants
+    internal static class JsonStringConstants
     {
         public const string Definitions = "definitions";
         public const string Type = "type";
@@ -16,6 +16,7 @@
         public const string OneOf = "oneOf";
         public const string Reference = "$ref";
         public const string Response = "response";
+        public const string Responses = "responses";
         public const string Errors = "errors";
         public const string Methods = "methods";
         public const string Name = "name";

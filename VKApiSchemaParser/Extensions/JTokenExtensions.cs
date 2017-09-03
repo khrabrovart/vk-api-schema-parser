@@ -21,6 +21,11 @@ namespace VKApiSchemaParser.Extensions
 
         public static T UseValueOrDefault<T>(this JToken token, string propertyName, Func<JToken, T> function)
         {
+            if (function == null)
+            {
+                return default(T);
+            }
+
             return HasValue(token, propertyName, out JToken resultToken) ? function(resultToken) : default(T);
         }
 

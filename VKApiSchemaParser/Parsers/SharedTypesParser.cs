@@ -8,17 +8,17 @@ namespace VKApiSchemaParser.Parsers
         {
             switch (typeName)
             {
-                case StringConstants.Integer:
+                case JsonStringConstants.Integer:
                     return ApiObjectType.Integer;
-                case StringConstants.String:
+                case JsonStringConstants.String:
                     return ApiObjectType.String;
-                case StringConstants.Boolean:
+                case JsonStringConstants.Boolean:
                     return ApiObjectType.Boolean;
-                case StringConstants.Object:
+                case JsonStringConstants.Object:
                     return ApiObjectType.Object;
-                case StringConstants.Array:
+                case JsonStringConstants.Array:
                     return ApiObjectType.Array;
-                case StringConstants.Number:
+                case JsonStringConstants.Number:
                     return ApiObjectType.Number;
                 default:
                     return ApiObjectType.Undefined;

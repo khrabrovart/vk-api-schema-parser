@@ -4,6 +4,7 @@ namespace VKApiSchemaParser.Models
 {
     public class ApiMethod
     {
+        public string MethodGroup { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public IEnumerable<ApiAccessTokenType> AccessTokenTypes { get; set; }

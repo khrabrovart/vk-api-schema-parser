@@ -3,6 +3,7 @@
     public class ApiMethodResponse
     {
         public string Name { get; set; }
-        public string Reference { get; set; }
+        public string ReferencePath { get; set; }
+        public ApiResponse Reference { get; set; }
     }
 }
