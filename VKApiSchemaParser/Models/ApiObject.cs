@@ -14,5 +14,6 @@ namespace VKApiSchemaParser.Models
         public string ReferencePath { get; set; }
         public ApiObject Reference { get; set; }
         public bool AdditionalProperties { get; set; }
+        public ApiObjectProperty Items { get; set; }
     }
 }

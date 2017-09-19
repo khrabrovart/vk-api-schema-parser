@@ -45,6 +45,7 @@ namespace VKApiSchemaParser.Parsers
                 {
                     MethodGroup = GetMethodGroup(c.GetString(JsonStringConstants.Name)),
                     Name = GetMethodName(c.GetString(JsonStringConstants.Name)),
+                    OriginalName = c.GetString(JsonStringConstants.Name),
                     Description = c.GetString(JsonStringConstants.Description),
                     AccessTokenTypes = GetAccessTokenTypes(c),
                     Parameters = GetMethodParameters(c),
@@ -112,6 +113,7 @@ namespace VKApiSchemaParser.Parsers
             return token.UseValueOrDefault(JsonStringConstants.Parameters, t => t?.Select(p => new ApiMethodParameter
             {
                 Name = p.GetString(JsonStringConstants.Name).Beautify(),
+                OriginalName = p.GetString(JsonStringConstants.Name),
                 Description = p.GetString(JsonStringConstants.Description),
                 Type = SharedTypesParser.ParseType(p.GetString(JsonStringConstants.Type)),
                 Minimum = p.GetInteger(JsonStringConstants.Minimum),

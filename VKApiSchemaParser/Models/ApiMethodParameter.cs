@@ -5,6 +5,7 @@ namespace VKApiSchemaParser.Models
     public class ApiMethodParameter
     {
         public string Name { get; set; }
+        public string OriginalName { get; set; }
         public string Description { get; set; }
         public ApiObjectType Type { get; set; }
         public int? Minimum { get; set; }

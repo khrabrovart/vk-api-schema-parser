@@ -49,6 +49,8 @@ namespace VKApiSchemaParser.Parsers
 
         private ApiObject ParseObject(JToken token, string originalName = null)
         {
+            var objectPropertyItems = token.UseValueOrDefault(JsonStringConstants.Items, ParseObjectProperty);
+
             var parsedObject = new ApiObject
             {
                 Name = originalName?.Beautify(),
@@ -57,7 +59,8 @@ namespace VKApiSchemaParser.Parsers
                 AdditionalProperties = token.GetBoolean(JsonStringConstants.AdditionalProperties) == true,
                 AllOf = token.UseValueOrDefault(JsonStringConstants.AllOf, t => t?.Select(ao => ParseObject(ao))),
                 OneOf = token.UseValueOrDefault(JsonStringConstants.OneOf, t => t?.Select(oo => ParseObject(oo))),
-                ReferencePath = token.GetString(JsonStringConstants.Reference)
+                ReferencePath = token.GetString(JsonStringConstants.Reference),
+                Items = objectPropertyItems
             };
 
             parsedObject.Properties = GetObjectProperties(token, token.GetArray(JsonStringConstants.Required)?.Select(p => p.Beautify()));
@@ -69,7 +72,7 @@ namespace VKApiSchemaParser.Parsers
 
         private IEnumerable<ApiObjectProperty> GetObjectProperties(JToken token, IEnumerable<string> requiredProperties)
         {
-            return token.UseValueOrDefault(JsonStringConstants.Properties, t => t.Select(p =>
+            var a = token.UseValueOrDefault(JsonStringConstants.Properties, t => t.Select(p =>
             {
                 var property = ParseObjectProperty(p.First);
 
@@ -80,6 +83,8 @@ namespace VKApiSchemaParser.Parsers
 
                 return property;
             }));
+
+            return a;
         }
 
         private ApiObject ResolveReference(string reference)
