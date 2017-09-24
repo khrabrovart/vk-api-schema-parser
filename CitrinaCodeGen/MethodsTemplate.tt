@@ -1,0 +1,53 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="$(SolutionDir)\CitrinaCodeGen\bin\Debug\CitrinaCodeGen.dll" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="CitrinaCodeGen" #>
+<#@ output extension=".cs" #>
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace Citrina.Methods
+{
+<#
+	var methods = MethodsProcessor.Process();
+
+	foreach (var mg in methods)
+	{
+#>
+    internal class <#=mg.Key#>Api : I<#=mg.Key#>Api
+    {
+<#
+		foreach (var m in mg.Value)
+		{
+#>
+        public Task<ApiRequest<<#=m.ReturnType#>>> <#=m.Name#>(<#=m.InlineParameters#>)
+        {
+            var request = new Dictionary<string, string>
+            {
+<#
+			foreach (var dictionaryParameter in m.MappingParameters)
+			{
+#>
+               <#=dictionaryParameter#>,
+<#
+			}
+#>
+            };
+            
+            return RequestManager.CreateRequestAsync<<#=m.ReturnType#>>("<#=m.OriginalName#>",<#=m.NeedAccessToken ? " accessToken," : " null,"#> request);
+        }
+
+<#
+		}
+#>
+    }
+
+<#
+	}
+#>
+}

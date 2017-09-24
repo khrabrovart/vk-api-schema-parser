@@ -1,0 +1,55 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="$(SolutionDir)\CitrinaCodeGen\bin\Debug\CitrinaCodeGen.dll" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="CitrinaCodeGen" #>
+<#@ output extension=".cs" #>
+using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
+
+namespace Citrina
+{
+<#
+	var objs = ObjectsProcessor.Process();
+
+    foreach (var o in objs)
+    {
+#>
+    public class <#=o.Name#><#=o.ParentType != null ? " : " + o.ParentType : "" #>
+    {
+<#
+		if (o.Properties != null)
+		{
+			foreach (var p in o.Properties)
+			{
+				if (!string.IsNullOrWhiteSpace(p.Summary))
+				{
+#>
+        /// <summary>
+        /// <#=p.Summary#>
+        /// </summary>
+<#
+				}
+
+				if (p.NeedJsonAttribute)
+				{			
+#>
+        [JsonProperty("<#=p.OriginalName#>")]
+<#
+				}
+#>
+        public <#=p.Type#> <#=p.Name#> { get; set; }
+<#
+			}
+		}
+#>
+    }
+
+<#
+	}
+#>
+}

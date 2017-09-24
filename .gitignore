@@ -1,7 +1,4 @@
 VKApiSchemaParser/bin/
 VKApiSchemaParser/obj/
-CitrinaCodeGen/
 .vs/
-ConsoleApp1/
-ConsoleApp2/
-ConsoleApp3/
+CitrinaCodeGen/obj/
