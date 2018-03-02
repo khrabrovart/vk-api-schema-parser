@@ -3,8 +3,12 @@
     public enum ApiObjectType
     {
         Undefined,
+        Multiple,
+        Object,
         Integer,
         String,
-        Object      
+        Array,
+        Number,
+        Boolean
     }
 }

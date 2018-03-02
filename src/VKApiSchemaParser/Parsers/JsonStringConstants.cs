@@ -26,6 +26,7 @@
         public const string Maximum = "maximum";
         public const string Default = "default";
         public const string MaxItems = "maxItems";
+        public const string MinProperties = "minProperties";
 
         // Types
         public const string Integer = "integer";

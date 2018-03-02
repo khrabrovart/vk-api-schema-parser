@@ -59,17 +59,17 @@ namespace VKApiSchemaParser.Parsers
                 Type = SharedTypesParser.ParseObjectType(token.GetString(JsonStringConstants.Type)),
                 AdditionalProperties = token.GetBoolean(JsonStringConstants.AdditionalProperties) == true,
                 AllOf = token.UseValueOrDefault(JsonStringConstants.AllOf, t => t?.Select(ao => ParseObject(ao))),
-                ReferencePath = token.GetString(JsonStringConstants.Reference)
+                //ReferencePath = token.GetString(JsonStringConstants.Reference)
             };
 
             parsedObject.Properties = GetObjectProperties(token, token.GetArray(JsonStringConstants.Required)?.Select(p => p.Beautify()));
 
-            parsedObject.Reference = ResolveReference(parsedObject.ReferencePath);
+            //parsedObject.Reference = ResolveReference(parsedObject.ReferencePath);
 
             return parsedObject;
         }
 
-        private IEnumerable<ApiObjectProperty> GetObjectProperties(JToken token, IEnumerable<string> requiredProperties)
+        private IEnumerable<ApiObject> GetObjectProperties(JToken token, IEnumerable<string> requiredProperties)
         {
             var a = token.UseValueOrDefault(JsonStringConstants.Properties, t => t.Select(p =>
             {
@@ -102,7 +102,7 @@ namespace VKApiSchemaParser.Parsers
             return null;
         }
 
-        private ApiObjectProperty ParseObjectProperty(JToken token)
+        private ApiObject ParseObjectProperty(JToken token)
         {
             if (token == null)
             {
@@ -112,7 +112,7 @@ namespace VKApiSchemaParser.Parsers
             var objectPropertyItems = token.UseValueOrDefault(JsonStringConstants.Items, ParseObjectProperty);
             var name = token.Path.Split('.').Last();
 
-            var parsedObjectProperty = new ApiObjectProperty
+            var parsedObjectProperty = new ApiObject
             {
                 Name = name.Beautify(),
                 OriginalName = name,
@@ -122,10 +122,10 @@ namespace VKApiSchemaParser.Parsers
                 Enum = token.GetArray(JsonStringConstants.Enum)?.Select(item => item.Beautify()),
                 EnumNames = token.GetArray(JsonStringConstants.EnumNames)?.Select(item => item.Beautify()),
                 Items = objectPropertyItems,
-                ReferencePath = token.GetString(JsonStringConstants.Reference)
+                //ReferencePath = token.GetString(JsonStringConstants.Reference)
             };
 
-            parsedObjectProperty.Reference = ResolveReference(parsedObjectProperty.ReferencePath);
+            //parsedObjectProperty.Reference = ResolveReference(parsedObjectProperty.ReferencePath);
 
             return parsedObjectProperty;
         }

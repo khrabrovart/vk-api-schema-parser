@@ -19,22 +19,22 @@ namespace VKApiSchemaParser.Parsers
             }   
         }
 
-        public static ApiObjectPropertyType ParseObjectPropertyType(string typeName)
+        public static ApiObjectType ParseObjectPropertyType(string typeName)
         {
             switch (typeName)
             {
                 case JsonStringConstants.Integer:
-                    return ApiObjectPropertyType.Integer;
+                    return ApiObjectType.Integer;
                 case JsonStringConstants.String:
-                    return ApiObjectPropertyType.String;
+                    return ApiObjectType.String;
                 case JsonStringConstants.Boolean:
-                    return ApiObjectPropertyType.Boolean;
+                    return ApiObjectType.Boolean;
                 case JsonStringConstants.Array:
-                    return ApiObjectPropertyType.Array;
+                    return ApiObjectType.Array;
                 case JsonStringConstants.Number:
-                    return ApiObjectPropertyType.Number;
+                    return ApiObjectType.Number;
                 default:
-                    return ApiObjectPropertyType.Undefined;
+                    return ApiObjectType.Undefined;
             }
         }
     }
