@@ -21,12 +21,9 @@ namespace VKApiSchemaParser.Extensions
 
         public static T UseValueOrDefault<T>(this JToken token, string propertyName, Func<JToken, T> function)
         {
-            if (function == null)
-            {
-                return default(T);
-            }
-
-            return HasValue(token, propertyName, out JToken resultToken) ? function(resultToken) : default(T);
+            return function != null && HasValue(token, propertyName, out JToken resultToken) ? 
+                function(resultToken) : 
+                default(T);
         }
 
         public static string GetString(this JToken token, string propertyName)
@@ -37,7 +34,7 @@ namespace VKApiSchemaParser.Extensions
         public static int? GetInteger(this JToken token, string propertyName)
         {
             return token.HasValue(propertyName, out JToken result) &&
-                int.TryParse(result.ToString(), out int value) ? (int?) value : null;
+                int.TryParse(result.ToString(), out int value) ? (int?)value : null;
         }
 
         public static bool? GetBoolean(this JToken token, string propertyName)

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
 using VKApiSchemaParser.Extensions;
 using VKApiSchemaParser.Models;
 
@@ -10,32 +11,27 @@ namespace VKApiSchemaParser.Parsers
     {
         private const string SelfReference = "#/definitions/";
 
-        protected override string CurrentSchemaUrl => SchemaUrl.Objects;
+        protected override string SchemaDownloadUrl => SchemaUrl.Objects;
 
         private JToken _definitions;
         private Dictionary<string, ApiObject> _parsed;
 
-        protected override ApiObjectsSchema Parse()
+        protected override ApiObjectsSchema Parse(JSchema schema)
         {
-            _definitions = RawSchema.ExtensionData[JsonStringConstants.Definitions];
+            _definitions = schema.ExtensionData[JsonStringConstants.Definitions];
             _parsed = new Dictionary<string, ApiObject>();
 
-            LoadObjects(_definitions);
-
-            return new ApiObjectsSchema
-            {
-                SchemaVersion = RawSchema.SchemaVersion,
-                Title = RawSchema.Title,
-                Objects = _parsed.Values.OrderBy(obj => obj.OriginalName)
-            };
-        }
-
-        private void LoadObjects(JToken token)
-        {
-            foreach (var d in token)
+            foreach (var d in _definitions)
             {
                 GetParsedObject(d);
             }
+
+            return new ApiObjectsSchema
+            {
+                SchemaVersion = schema.SchemaVersion,
+                Title = schema.Title,
+                Objects = _parsed.Values.OrderBy(obj => obj.OriginalName)
+            };
         }
 
         private ApiObject GetParsedObject(JToken token)
@@ -98,11 +94,10 @@ namespace VKApiSchemaParser.Parsers
             {
                 Name = originalName?.Beautify(),
                 OriginalName = originalName,
-                Type = SharedTypesParser.ParseType(token.GetString(JsonStringConstants.Type)),
+                Type = SharedTypesParser.ParseObjectType(token.GetString(JsonStringConstants.Type)),
                 OriginalTypeName = token.GetString(JsonStringConstants.Type),
                 AdditionalProperties = token.GetBoolean(JsonStringConstants.AdditionalProperties) == true,
                 AllOf = token.UseValueOrDefault(JsonStringConstants.AllOf, t => t?.Select(ao => ParseObject(ao))),
-                OneOf = token.UseValueOrDefault(JsonStringConstants.OneOf, t => t?.Select(oo => ParseObject(oo))),
                 ReferencePath = token.GetString(JsonStringConstants.Reference)
             };
 
@@ -145,14 +140,12 @@ namespace VKApiSchemaParser.Parsers
                 Name = name.Beautify(),
                 OriginalName = name,
                 Description = token.GetString(JsonStringConstants.Description),
-                Type = SharedTypesParser.ParseType(token.GetString(JsonStringConstants.Type)),
+                Type = SharedTypesParser.ParseObjectPropertyType(token.GetString(JsonStringConstants.Type)),
                 OriginalTypeName = token.GetString(JsonStringConstants.Type),
                 Minimum = token.GetInteger(JsonStringConstants.Minimum),
                 Enum = token.GetArray(JsonStringConstants.Enum)?.Select(item => item.Beautify()),
                 EnumNames = token.GetArray(JsonStringConstants.EnumNames)?.Select(item => item.Beautify()),
                 Items = objectPropertyItems,
-                AllOf = token.UseValueOrDefault(JsonStringConstants.AllOf, t => t?.Select(ao => ParseObject(ao))),
-                OneOf = token.UseValueOrDefault(JsonStringConstants.OneOf, t => t?.Select(oo => ParseObject(oo))),
                 ReferencePath = token.GetString(JsonStringConstants.Reference)
             };
 

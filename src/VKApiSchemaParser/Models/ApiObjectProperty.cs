@@ -7,16 +7,22 @@ namespace VKApiSchemaParser.Models
         public string Name { get; set; }
         public string OriginalName { get; set; }
         public string Description { get; set; }
-        public ApiObjectType Type { get; set; }
+        public ApiObjectPropertyType Type { get; set; }
         public string OriginalTypeName { get; set; }
         public int? Minimum { get; set; }
-        public IEnumerable<string> Enum { get; set; }
-        public IEnumerable<string> EnumNames { get; set; }
-        public ApiObjectProperty Items { get; set; }
         public string ReferencePath { get; set; }
         public ApiObject Reference { get; set; }
-        public IEnumerable<ApiObject> AllOf { get; set; }
-        public IEnumerable<ApiObject> OneOf { get; set; }
+        public ApiObjectProperty Items { get; set; }     
+
+        // Sometimes it's Int, sometimes it's String.
+        public IEnumerable<string> Enum { get; set; }
+        public IEnumerable<string> EnumNames { get; set; }
+        
+        // Actually this property not declared in the object property definition
+        // but is replaces object's Required property.
         public bool IsRequired { get; set; }
+
+        
+           
     }
 }

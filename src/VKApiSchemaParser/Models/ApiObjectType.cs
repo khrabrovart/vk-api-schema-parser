@@ -2,13 +2,9 @@
 {
     public enum ApiObjectType
     {
+        Undefined,
         Integer,
         String,
-        Boolean,
-        Object,
-        Array,
-        Number,
-        Multiple,
-        Undefined
+        Object      
     }
 }

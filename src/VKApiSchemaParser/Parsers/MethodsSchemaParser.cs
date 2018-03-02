@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
 using VKApiSchemaParser.Extensions;
 using VKApiSchemaParser.Models;
 
@@ -10,16 +11,16 @@ namespace VKApiSchemaParser.Parsers
     {
         private const string ResponsesReference = "responses.json#/definitions/";
 
-        protected override string CurrentSchemaUrl => SchemaUrl.Methods;
+        protected override string SchemaDownloadUrl => SchemaUrl.Methods;
 
         private ApiResponsesSchema _responses;
 
-        protected override ApiMethodsSchema Parse()
+        protected override ApiMethodsSchema Parse(JSchema schema)
         {
-            _responses = new ResponsesSchemaParser().GetAsync().Result;
+            _responses = new ResponsesSchemaParser().ParseAsync().Result;
 
-            var errors = RawSchema.ExtensionData[JsonStringConstants.Errors];
-            var methods = RawSchema.ExtensionData[JsonStringConstants.Methods];
+            var errors = schema.ExtensionData[JsonStringConstants.Errors];
+            var methods = schema.ExtensionData[JsonStringConstants.Methods];
 
             return new ApiMethodsSchema
             {
@@ -102,7 +103,7 @@ namespace VKApiSchemaParser.Parsers
         {
             return token.UseValueOrDefault(JsonStringConstants.Items, t => new ApiMethodParameterItems
             {
-                Type = SharedTypesParser.ParseType(t.GetString(JsonStringConstants.Type)),
+                Type = SharedTypesParser.ParseObjectType(t.GetString(JsonStringConstants.Type)),
                 Minimum = t.GetInteger(JsonStringConstants.Minimum),
                 Enum = t.GetArray(JsonStringConstants.Enum)?.Select(item => item.Beautify())
             });
@@ -115,7 +116,7 @@ namespace VKApiSchemaParser.Parsers
                 Name = p.GetString(JsonStringConstants.Name).Beautify(),
                 OriginalName = p.GetString(JsonStringConstants.Name),
                 Description = p.GetString(JsonStringConstants.Description),
-                Type = SharedTypesParser.ParseType(p.GetString(JsonStringConstants.Type)),
+                Type = SharedTypesParser.ParseObjectType(p.GetString(JsonStringConstants.Type)),
                 Minimum = p.GetInteger(JsonStringConstants.Minimum),
                 Maximum = p.GetInteger(JsonStringConstants.Maximum),
                 Default = p.GetInteger(JsonStringConstants.Default),

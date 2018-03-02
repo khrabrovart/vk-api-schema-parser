@@ -5,17 +5,16 @@ namespace VKApiSchemaParser.Parsers
 {
     internal abstract class SchemaParser<T>
     {
-        protected abstract string CurrentSchemaUrl { get; }
-        protected JSchema RawSchema { get; private set; }
+        protected abstract string SchemaDownloadUrl { get; }
 
         private static T _parsedSchema;
 
-        public async Task<T> GetAsync()
+        public async Task<T> ParseAsync()
         {
             if (_parsedSchema == null)
             {
-                RawSchema = await InitializeAsync(CurrentSchemaUrl).ConfigureAwait(false);
-                _parsedSchema = Parse();
+                var schema = await InitializeAsync(SchemaDownloadUrl).ConfigureAwait(false);
+                _parsedSchema = Parse(schema);
             }
 
             return _parsedSchema;
@@ -27,6 +26,6 @@ namespace VKApiSchemaParser.Parsers
             return JSchema.Parse(rawSchema);
         }
 
-        protected abstract T Parse();
+        protected abstract T Parse(JSchema schema);
     }
 }

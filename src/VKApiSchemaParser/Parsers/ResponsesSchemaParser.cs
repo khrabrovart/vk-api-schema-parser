@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
 using VKApiSchemaParser.Extensions;
 using VKApiSchemaParser.Models;
 
@@ -10,20 +11,20 @@ namespace VKApiSchemaParser.Parsers
     {
         private const string ObjectsReference = "objects.json#/definitions/";
 
-        protected override string CurrentSchemaUrl => SchemaUrl.Responses;
+        protected override string SchemaDownloadUrl => SchemaUrl.Responses;
 
         private ApiObjectsSchema _objects;
 
-        protected override ApiResponsesSchema Parse()
+        protected override ApiResponsesSchema Parse(JSchema schema)
         {
-            _objects = new ObjectsSchemaParser().GetAsync().Result;
+            _objects = new ObjectsSchemaParser().ParseAsync().Result;
 
-            var definitions = RawSchema.ExtensionData[JsonStringConstants.Definitions];
+            var definitions = schema.ExtensionData[JsonStringConstants.Definitions];
 
             return new ApiResponsesSchema
             {
-                SchemaVersion = RawSchema.SchemaVersion,
-                Title = RawSchema.Title,
+                SchemaVersion = schema.SchemaVersion,
+                Title = schema.Title,
                 Responses = definitions.Select(d => GetResponse(d.First, d.Path))
             };
         }
@@ -34,7 +35,7 @@ namespace VKApiSchemaParser.Parsers
             {
                 Name = originalName.Beautify(),
                 OriginalName = originalName,
-                Type = SharedTypesParser.ParseType(token.GetString(JsonStringConstants.Type)),
+                Type = SharedTypesParser.ParseObjectType(token.GetString(JsonStringConstants.Type)),
                 OriginalTypeName = token.GetString(JsonStringConstants.Type),
                 Object = GetResponseObject(token, originalName),
                 AdditionalProperties = token.GetBoolean(JsonStringConstants.AdditionalProperties) == true
@@ -55,12 +56,10 @@ namespace VKApiSchemaParser.Parsers
             {
                 Name = originalName?.Beautify(),
                 OriginalName = originalName,
-                Type = SharedTypesParser.ParseType(token.GetString(JsonStringConstants.Type)),
+                Type = SharedTypesParser.ParseObjectType(token.GetString(JsonStringConstants.Type)),
                 AdditionalProperties = token.GetBoolean(JsonStringConstants.AdditionalProperties) == true,
                 AllOf = token.UseValueOrDefault(JsonStringConstants.AllOf, t => t?.Select(ao => ParseObject(ao))),
-                OneOf = token.UseValueOrDefault(JsonStringConstants.OneOf, t => t?.Select(oo => ParseObject(oo))),
-                ReferencePath = token.GetString(JsonStringConstants.Reference),
-                Items = objectPropertyItems
+                ReferencePath = token.GetString(JsonStringConstants.Reference)
             };
 
             parsedObject.Properties = GetObjectProperties(token, token.GetArray(JsonStringConstants.Required)?.Select(p => p.Beautify()));
@@ -118,13 +117,11 @@ namespace VKApiSchemaParser.Parsers
                 Name = name.Beautify(),
                 OriginalName = name,
                 Description = token.GetString(JsonStringConstants.Description),
-                Type = SharedTypesParser.ParseType(token.GetString(JsonStringConstants.Type)),
+                Type = SharedTypesParser.ParseObjectPropertyType(token.GetString(JsonStringConstants.Type)),
                 Minimum = token.GetInteger(JsonStringConstants.Minimum),
                 Enum = token.GetArray(JsonStringConstants.Enum)?.Select(item => item.Beautify()),
                 EnumNames = token.GetArray(JsonStringConstants.EnumNames)?.Select(item => item.Beautify()),
                 Items = objectPropertyItems,
-                AllOf = token.UseValueOrDefault(JsonStringConstants.AllOf, t => t?.Select(ao => ParseObject(ao))),
-                OneOf = token.UseValueOrDefault(JsonStringConstants.OneOf, t => t?.Select(oo => ParseObject(oo))),
                 ReferencePath = token.GetString(JsonStringConstants.Reference)
             };
 

@@ -4,7 +4,7 @@ namespace VKApiSchemaParser.Parsers
 {
     internal class SharedTypesParser
     {
-        public static ApiObjectType ParseType(string typeName)
+        public static ApiObjectType ParseObjectType(string typeName)
         {
             switch (typeName)
             {
@@ -12,17 +12,30 @@ namespace VKApiSchemaParser.Parsers
                     return ApiObjectType.Integer;
                 case JsonStringConstants.String:
                     return ApiObjectType.String;
-                case JsonStringConstants.Boolean:
-                    return ApiObjectType.Boolean;
                 case JsonStringConstants.Object:
                     return ApiObjectType.Object;
-                case JsonStringConstants.Array:
-                    return ApiObjectType.Array;
-                case JsonStringConstants.Number:
-                    return ApiObjectType.Number;
                 default:
                     return ApiObjectType.Undefined;
             }   
+        }
+
+        public static ApiObjectPropertyType ParseObjectPropertyType(string typeName)
+        {
+            switch (typeName)
+            {
+                case JsonStringConstants.Integer:
+                    return ApiObjectPropertyType.Integer;
+                case JsonStringConstants.String:
+                    return ApiObjectPropertyType.String;
+                case JsonStringConstants.Boolean:
+                    return ApiObjectPropertyType.Boolean;
+                case JsonStringConstants.Array:
+                    return ApiObjectPropertyType.Array;
+                case JsonStringConstants.Number:
+                    return ApiObjectPropertyType.Number;
+                default:
+                    return ApiObjectPropertyType.Undefined;
+            }
         }
     }
 }

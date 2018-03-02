@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using VKApiSchemaParser.Models;
 using VKApiSchemaParser.Parsers;
 
@@ -19,17 +20,17 @@ namespace VKApiSchemaParser
 
         public Task<ApiObjectsSchema> GetObjectsAsync()
         {
-            return _objectsSchemaParser.GetAsync();
+            return _objectsSchemaParser.ParseAsync();
         }
 
         public Task<ApiResponsesSchema> GetResponsesAsync()
         {
-            return _responsesSchemaParser.GetAsync();
+            return _responsesSchemaParser.ParseAsync();
         }
 
         public Task<ApiMethodsSchema> GetMethodsAsync()
         {
-            return _methodsSchemaParser.GetAsync();
+            return _methodsSchemaParser.ParseAsync();
         }
     }
 }

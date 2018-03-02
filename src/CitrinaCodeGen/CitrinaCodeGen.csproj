@@ -45,11 +45,6 @@
     <Compile Include="CitrinaMethodParameter.cs" />
     <Compile Include="CitrinaObject.cs" />
     <Compile Include="CitrinaObjectProperty.cs" />
-    <Content Include="MethodsTemplate.cs">
-      <DependentUpon>MethodsTemplate.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Content>
     <Compile Include="IProcessor.cs" />
     <Compile Include="MethodsProcessor.cs" />
     <Compile Include="ObjectPropertyEqualityComparer.cs" />
@@ -69,21 +64,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ObjectsProcessor.cs" />
     <Compile Include="ResponsesProcessor.cs" />
-    <Content Include="InterfacesTemplate.cs">
-      <DependentUpon>InterfacesTemplate.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Content>
     <Compile Include="TypesResolver.cs" />
     <None Include="ResponsesTemplate.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ResponsesTemplate.cs</LastGenOutput>
     </None>
-    <Content Include="ObjectsTemplate.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ObjectsTemplate.tt</DependentUpon>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VKApiSchemaParser\VKApiSchemaParser.csproj">
