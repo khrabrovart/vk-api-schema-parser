@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
@@ -14,13 +16,12 @@ namespace VKApiSchemaParser.Parsers
         protected override string SchemaDownloadUrl => SchemaUrl.Objects;
 
         private JToken _definitions;
-        private Dictionary<string, ApiObject> _apiObjects = new Dictionary<string, ApiObject>();
+        private ConcurrentDictionary<string, ApiObject> _apiObjects = new ConcurrentDictionary<string, ApiObject>();
 
         protected override ApiObjectsSchema Parse(JSchema schema)
         {
             _definitions = schema.ExtensionData[JsonStringConstants.Definitions];
 
-            // TODO: Try use Parallel
             foreach (var definition in _definitions)
             {
                 if (!_apiObjects.ContainsKey(definition.Path))
@@ -63,7 +64,11 @@ namespace VKApiSchemaParser.Parsers
                 OriginalName = token.Path
             };
 
-            _apiObjects.Add(token.Path, newObject);
+            if (!_apiObjects.TryAdd(newObject.OriginalName, newObject))
+            {
+                throw new Exception("Unable to add new object to dictionary.");
+            }
+
             FillObjectWithData(newObject, token.First);
 
             return newObject;

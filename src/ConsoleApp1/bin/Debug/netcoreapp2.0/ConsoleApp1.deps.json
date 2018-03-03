@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.0",
-    "signature": "026b9bf7294da21aab8c06e1b011e6bdd47577da"
+    "signature": "84b86ddaa95a77fd929b84f31e0d305067a00136"
   },
   "compilationOptions": {},
   "targets": {
@@ -782,6 +782,18 @@
           "System.Threading.Tasks": "4.3.0"
         }
       },
+      "System.Threading.Tasks.Parallel/4.3.0": {
+        "dependencies": {
+          "System.Collections.Concurrent": "4.3.0",
+          "System.Diagnostics.Debug": "4.3.0",
+          "System.Diagnostics.Tracing": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Threading": "4.3.0",
+          "System.Threading.Tasks": "4.3.0"
+        }
+      },
       "System.Xml.ReaderWriter/4.3.0": {
         "dependencies": {
           "System.Collections": "4.3.0",
@@ -818,7 +830,8 @@
       "VKApiSchemaParser/1.0.0": {
         "dependencies": {
           "Newtonsoft.Json": "10.0.3",
-          "Newtonsoft.Json.Schema": "3.0.3"
+          "Newtonsoft.Json.Schema": "3.0.3",
+          "System.Threading.Tasks.Parallel": "4.3.0"
         },
         "runtime": {
           "VKApiSchemaParser.dll": {}
@@ -1328,6 +1341,13 @@
       "sha512": "sha512-RISklhcK8bjjonjfweEwJkHYOOovWQiTCAeW36Ofxza/YG19Mv63odGeIOFqV0RUI+7Z1f+5QoauMmn0xl/KFg==",
       "path": "system.threading.tasks.extensions/4.3.0",
       "hashPath": "system.threading.tasks.extensions.4.3.0.nupkg.sha512"
+    },
+    "System.Threading.Tasks.Parallel/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-e01t64eMBBter/oL0AbYM01Yy6omXbd/HQqTLYkhnZzba9IZYJBs1Bab6vTPkqQB/+qkAdT7Y6ooL9L2F02GyA==",
+      "path": "system.threading.tasks.parallel/4.3.0",
+      "hashPath": "system.threading.tasks.parallel.4.3.0.nupkg.sha512"
     },
     "System.Xml.ReaderWriter/4.3.0": {
       "type": "package",

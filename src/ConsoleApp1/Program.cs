@@ -12,7 +12,7 @@ namespace ConsoleApp1
         {
             var vkapi = new VKApiSchema();
             var a = vkapi.GetObjectsAsync().Result;
-            a.Objects = a.Objects.Skip(0).Take(20);
+            //a.Objects = a.Objects.Skip(0).Take(20);
             var j = JsonConvert.SerializeObject(a, new JsonSerializerSettings
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
@@ -20,7 +20,7 @@ namespace ConsoleApp1
                 DefaultValueHandling = DefaultValueHandling.Ignore
             });
 
-            File.WriteAllText($"D:\\json-{Guid.NewGuid()}.json", j);
+            //File.WriteAllText($"D:\\json-{Guid.NewGuid()}.json", j);
             Console.WriteLine();
         }
     }
