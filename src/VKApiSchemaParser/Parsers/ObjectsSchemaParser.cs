@@ -26,7 +26,7 @@ namespace VKApiSchemaParser.Parsers
             {
                 if (!_apiObjects.ContainsKey(definition.Path))
                 {
-                    ParseObject(definition);
+                    FillObjectWithData(definition.First, true);
                 }
             }
 
@@ -48,31 +48,28 @@ namespace VKApiSchemaParser.Parsers
 
             return _apiObjects.ContainsKey(referencePath) ?
                 _apiObjects[referencePath] :
-                ParseObject(_definitions.First(d => d.Path == referencePath));
+                FillObjectWithData(_definitions.First(d => d.Path == referencePath).First, true);
         }
 
-        private ApiObject ParseObject(JToken token)
+        private ApiObject FillObjectWithData(JToken token, bool needRegistration)
         {
-            // Some magic just for looped references. Creating and pushing new object
-            // to apiObjects list in case if this object will suddenly need it inside 
-            // itself. Chain of property references can lead to the object itself.
-            //
-            // Example: messages_message object has fwd_messages property that contains
-            // reference to the messages_message object itself.
-            var newObject = new ApiObject
+            var name = token.Path.Split('.').Last();
+            var obj = new ApiObject
             {
-                Name = token.Path.Beautify(),
-                OriginalName = token.Path
+                Name = name?.Beautify(),
+                OriginalName = name
             };
 
-            _apiObjects.Add(newObject.OriginalName, newObject);
-            FillObjectWithData(newObject, token.First);
+            if (needRegistration)
+            {
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    throw new ArgumentNullException("Invalid name.", nameof(name));
+                }
 
-            return newObject;
-        }
+                _apiObjects.Add(name, obj);
+            }
 
-        private void FillObjectWithData(ApiObject obj, JToken token)
-        {
             var type = token.GetArray(JsonStringConstants.Type)?.Count() > 1 ? 
                 JsonStringConstants.Multiple : 
                 token.GetString(JsonStringConstants.Type);
@@ -88,14 +85,7 @@ namespace VKApiSchemaParser.Parsers
                 .Where(p => p.First != null)
                 .Select(p =>
                 {
-                    var name = p.First.Path.Split('.').Last();
-                    var newObject = new ApiObject
-                    {
-                        Name = name.Beautify(),
-                        OriginalName = name
-                    };
-
-                    FillObjectWithData(newObject, p.First);
+                    var newObject = FillObjectWithData(p.First, false);
 
                     if (requiredProperties != null)
                     {
@@ -115,6 +105,8 @@ namespace VKApiSchemaParser.Parsers
 
             var reference = token.GetString(JsonStringConstants.Reference);
             obj.Reference = string.IsNullOrWhiteSpace(reference) ? null : ResolveReference(reference);
+
+            return obj;
         }
 
         private ApiObject ParseAsNestedObject(JToken token)
@@ -126,9 +118,7 @@ namespace VKApiSchemaParser.Parsers
                 return ResolveReference(referencePath);
             }
 
-            var newObject = new ApiObject();
-            FillObjectWithData(newObject, token);
-            return newObject;
+            return FillObjectWithData(token, false);
         }
     }
 }
