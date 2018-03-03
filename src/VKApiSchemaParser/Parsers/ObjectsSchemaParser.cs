@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
@@ -16,8 +15,9 @@ namespace VKApiSchemaParser.Parsers
         protected override string SchemaDownloadUrl => SchemaUrl.Objects;
 
         private JToken _definitions;
-        private ConcurrentDictionary<string, ApiObject> _apiObjects = new ConcurrentDictionary<string, ApiObject>();
+        private Dictionary<string, ApiObject> _apiObjects = new Dictionary<string, ApiObject>();
 
+        // TODO: Deal with loop references.
         protected override ApiObjectsSchema Parse(JSchema schema)
         {
             _definitions = schema.ExtensionData[JsonStringConstants.Definitions];
@@ -40,35 +40,32 @@ namespace VKApiSchemaParser.Parsers
 
         private ApiObject ResolveReference(string referencePath)
         {
-            // Checking for self refeerence, issue https://github.com/VKCOM/vk-api-schema/issues/35
+            // Checking for self reference, issue https://github.com/VKCOM/vk-api-schema/issues/35
             if (referencePath.StartsWith(SelfReference))
             {
                 referencePath = referencePath.Substring(SelfReference.Length);
             }
 
-            return _apiObjects.ContainsKey(referencePath) ? 
+            return _apiObjects.ContainsKey(referencePath) ?
                 _apiObjects[referencePath] :
                 ParseObject(_definitions.First(d => d.Path == referencePath));
         }
-
-        #region Object Parsing
 
         private ApiObject ParseObject(JToken token)
         {
             // Some magic just for looped references. Creating and pushing new object
             // to apiObjects list in case if this object will suddenly need it inside 
             // itself. Chain of property references can lead to the object itself.
+            //
+            // Example: messages_message object has fwd_messages property that contains
+            // reference to the messages_message object itself.
             var newObject = new ApiObject
             {
                 Name = token.Path.Beautify(),
                 OriginalName = token.Path
             };
 
-            if (!_apiObjects.TryAdd(newObject.OriginalName, newObject))
-            {
-                throw new Exception("Unable to add new object to dictionary.");
-            }
-
+            _apiObjects.Add(newObject.OriginalName, newObject);
             FillObjectWithData(newObject, token.First);
 
             return newObject;
@@ -76,80 +73,62 @@ namespace VKApiSchemaParser.Parsers
 
         private void FillObjectWithData(ApiObject obj, JToken token)
         {
-            obj.Type = SharedTypesParser.ParseObjectType(token.GetString(JsonStringConstants.Type));
-            obj.OriginalTypeName = token.GetString(JsonStringConstants.Type);
+            var type = token.GetArray(JsonStringConstants.Type)?.Count() > 1 ? 
+                JsonStringConstants.Multiple : 
+                token.GetString(JsonStringConstants.Type);
+
+            obj.Type = SharedTypesParser.ParseObjectType(type);
+            obj.OriginalTypeName = type;
+
             obj.Description = token.GetString(JsonStringConstants.Description);
-            obj.Properties = GetObjectProperties(token, token.GetArray(JsonStringConstants.Required));
+            obj.Minimum = token.GetInteger(JsonStringConstants.Minimum);
+
+            var requiredProperties = token.GetArray(JsonStringConstants.Required);
+            obj.Properties = token.UseValueOrDefault(JsonStringConstants.Properties, t => t
+                .Where(p => p.First != null)
+                .Select(p =>
+                {
+                    var name = p.First.Path.Split('.').Last();
+                    var newObject = new ApiObject
+                    {
+                        Name = name.Beautify(),
+                        OriginalName = name
+                    };
+
+                    FillObjectWithData(newObject, p.First);
+
+                    if (requiredProperties != null)
+                    {
+                        newObject.IsRequired = requiredProperties.Contains(newObject.OriginalName);
+                    }
+
+                    return newObject;
+                }));
+
             obj.Enum = token.GetArray(JsonStringConstants.Enum)?.Select(item => item.Beautify());
             obj.EnumNames = token.GetArray(JsonStringConstants.EnumNames)?.Select(item => item.Beautify());
             obj.MinProperties = token.GetInteger(JsonStringConstants.MinProperties);
             obj.AdditionalProperties = token.GetBoolean(JsonStringConstants.AdditionalProperties) == true;
-            obj.AllOf = token.UseValueOrDefault(JsonStringConstants.AllOf, t => t?.Select(ao =>
-            {
-                var referencePath = ao.GetString(JsonStringConstants.Reference);
+            obj.Items = token.UseValueOrDefault(JsonStringConstants.Items, ParseAsNestedObject);
+            obj.AllOf = token.UseValueOrDefault(JsonStringConstants.AllOf, t => t?.Select(ParseAsNestedObject));
+            obj.OneOf = token.UseValueOrDefault(JsonStringConstants.OneOf, t => t?.Select(ParseAsNestedObject));
 
-                if (referencePath != null)
-                {
-                    return ResolveReference(referencePath);
-                }
-
-                var newObject = new ApiObject();
-                FillObjectWithData(newObject, ao);
-
-                return newObject;
-            }));
+            var reference = token.GetString(JsonStringConstants.Reference);
+            obj.Reference = string.IsNullOrWhiteSpace(reference) ? null : ResolveReference(reference);
         }
 
-        #endregion
-
-        #region Property Parsing
-
-        private IEnumerable<ApiObject> GetObjectProperties(JToken token, IEnumerable<string> requiredProperties)
-        {
-            return token.UseValueOrDefault(JsonStringConstants.Properties, t => t
-                .Where(p => p.First != null)
-                .Select(p =>
-                {
-                    var property = ParseObjectProperty(p.First);
-
-                    if (requiredProperties != null)
-                    {
-                        property.IsRequired = requiredProperties.Contains(property.OriginalName);
-                    }
-
-                    return property;
-                }));
-        }
-
-        private ApiObject ParseObjectProperty(JToken token)
+        private ApiObject ParseAsNestedObject(JToken token)
         {
             var referencePath = token.GetString(JsonStringConstants.Reference);
 
-            if (referencePath != null)
+            if (!string.IsNullOrWhiteSpace(referencePath))
             {
                 return ResolveReference(referencePath);
             }
 
-            var name = token.Path.Split('.').Last();
-
-            var newObjectProperty = new ApiObject
-            {
-                Name = name.Beautify(),
-                OriginalName = name,
-
-                // Drops on reference
-                Description = token.GetString(JsonStringConstants.Description),
-                Type = SharedTypesParser.ParseObjectPropertyType(token.GetString(JsonStringConstants.Type)),
-                OriginalTypeName = token.GetString(JsonStringConstants.Type),
-                Minimum = token.GetInteger(JsonStringConstants.Minimum),
-                Enum = token.GetArray(JsonStringConstants.Enum)?.Select(item => item.Beautify()),
-                EnumNames = token.GetArray(JsonStringConstants.EnumNames)?.Select(item => item.Beautify()),
-                Items = token.UseValueOrDefault(JsonStringConstants.Items, t => ParseObjectProperty(t))
-            };
-
-            return newObjectProperty;
+            var newObject = new ApiObject();
+            FillObjectWithData(newObject, token);
+            return newObject;
         }
-
-        #endregion
     }
 }

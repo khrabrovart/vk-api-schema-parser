@@ -117,7 +117,7 @@ namespace VKApiSchemaParser.Parsers
                 Name = name.Beautify(),
                 OriginalName = name,
                 Description = token.GetString(JsonStringConstants.Description),
-                Type = SharedTypesParser.ParseObjectPropertyType(token.GetString(JsonStringConstants.Type)),
+                Type = SharedTypesParser.ParseObjectType(token.GetString(JsonStringConstants.Type)),
                 Minimum = token.GetInteger(JsonStringConstants.Minimum),
                 Enum = token.GetArray(JsonStringConstants.Enum)?.Select(item => item.Beautify()),
                 EnumNames = token.GetArray(JsonStringConstants.EnumNames)?.Select(item => item.Beautify()),

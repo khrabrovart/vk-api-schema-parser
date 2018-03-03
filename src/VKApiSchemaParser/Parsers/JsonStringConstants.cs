@@ -28,7 +28,8 @@
         public const string MaxItems = "maxItems";
         public const string MinProperties = "minProperties";
 
-        // Types
+        #region Types
+
         public const string Integer = "integer";
         public const string Boolean = "boolean";
         public const string Array = "array";
@@ -36,10 +37,18 @@
         public const string Object = "object";
         public const string String = "string";
 
-        // AccessToken types
+        // For [integer, string] types
+        public const string Multiple = "multiple";
+
+        #endregion
+
+        #region AccessToken Types
+
         public const string User = "user";
         public const string Open = "open";
         public const string Service = "service";
         public const string Group = "group";
+
+        #endregion
     }
 }
