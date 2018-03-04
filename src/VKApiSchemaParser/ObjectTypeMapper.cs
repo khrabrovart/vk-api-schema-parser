@@ -1,10 +1,10 @@
 ﻿using VKApiSchemaParser.Models;
 
-namespace VKApiSchemaParser.Parsers
+namespace VKApiSchemaParser
 {
-    internal class SharedTypesParser
+    internal static class ObjectTypeMapper
     {
-        public static ApiObjectType ParseObjectType(string typeName)
+        public static ApiObjectType Map(string typeName)
         {
             switch (typeName)
             {

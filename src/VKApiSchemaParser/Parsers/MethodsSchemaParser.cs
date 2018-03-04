@@ -7,7 +7,7 @@ using VKApiSchemaParser.Models;
 
 namespace VKApiSchemaParser.Parsers
 {
-    internal class MethodsSchemaParser : SchemaParser<ApiMethodsSchema>
+    internal class MethodsSchemaParser : BaseSchemaParser<ApiMethodsSchema>
     {
         private const string ResponsesReference = "responses.json#/definitions/";
 
@@ -103,7 +103,7 @@ namespace VKApiSchemaParser.Parsers
         {
             return token.UseValueOrDefault(JsonStringConstants.Items, t => new ApiMethodParameterItems
             {
-                Type = SharedTypesParser.ParseObjectType(t.GetString(JsonStringConstants.Type)),
+                Type = ObjectTypeMapper.Map(t.GetString(JsonStringConstants.Type)),
                 Minimum = t.GetInteger(JsonStringConstants.Minimum),
                 Enum = t.GetArray(JsonStringConstants.Enum)?.Select(item => item.Beautify())
             });
@@ -116,7 +116,7 @@ namespace VKApiSchemaParser.Parsers
                 Name = p.GetString(JsonStringConstants.Name).Beautify(),
                 OriginalName = p.GetString(JsonStringConstants.Name),
                 Description = p.GetString(JsonStringConstants.Description),
-                Type = SharedTypesParser.ParseObjectType(p.GetString(JsonStringConstants.Type)),
+                Type = ObjectTypeMapper.Map(p.GetString(JsonStringConstants.Type)),
                 Minimum = p.GetInteger(JsonStringConstants.Minimum),
                 Maximum = p.GetInteger(JsonStringConstants.Maximum),
                 Default = p.GetInteger(JsonStringConstants.Default),

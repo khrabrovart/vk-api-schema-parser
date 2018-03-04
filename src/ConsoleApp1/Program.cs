@@ -54,7 +54,9 @@ namespace ConsoleApp1
                 DefaultValueHandling = DefaultValueHandling.Ignore
             });
 
-            File.WriteAllText($@"C:\Users\monte\Desktop\json-{DateTime.Now.Hour}-{DateTime.Now.Minute}-{DateTime.Now.Second}.json", j);
+            var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            var filePath = Path.Combine(desktopPath, $"json-{DateTime.Now.ToString("ddMMyyHHmmss")}.json");
+            File.WriteAllText(filePath, j);
             Console.WriteLine();
         }
     }

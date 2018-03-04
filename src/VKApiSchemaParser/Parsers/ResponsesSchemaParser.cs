@@ -7,7 +7,7 @@ using VKApiSchemaParser.Models;
 
 namespace VKApiSchemaParser.Parsers
 {
-    internal class ResponsesSchemaParser : SchemaParser<ApiResponsesSchema>
+    internal class ResponsesSchemaParser : BaseSchemaParser<ApiResponsesSchema>
     {
         private const string ObjectsReference = "objects.json#/definitions/";
 
@@ -35,7 +35,7 @@ namespace VKApiSchemaParser.Parsers
             {
                 Name = originalName.Beautify(),
                 OriginalName = originalName,
-                Type = SharedTypesParser.ParseObjectType(token.GetString(JsonStringConstants.Type)),
+                Type = ObjectTypeMapper.Map(token.GetString(JsonStringConstants.Type)),
                 OriginalTypeName = token.GetString(JsonStringConstants.Type),
                 Object = GetResponseObject(token, originalName),
                 AdditionalProperties = token.GetBoolean(JsonStringConstants.AdditionalProperties) == true
@@ -56,7 +56,7 @@ namespace VKApiSchemaParser.Parsers
             {
                 Name = originalName?.Beautify(),
                 OriginalName = originalName,
-                Type = SharedTypesParser.ParseObjectType(token.GetString(JsonStringConstants.Type)),
+                Type = ObjectTypeMapper.Map(token.GetString(JsonStringConstants.Type)),
                 AdditionalProperties = token.GetBoolean(JsonStringConstants.AdditionalProperties) == true,
                 AllOf = token.UseValueOrDefault(JsonStringConstants.AllOf, t => t?.Select(ao => ParseObject(ao))),
                 //ReferencePath = token.GetString(JsonStringConstants.Reference)
@@ -117,7 +117,7 @@ namespace VKApiSchemaParser.Parsers
                 Name = name.Beautify(),
                 OriginalName = name,
                 Description = token.GetString(JsonStringConstants.Description),
-                Type = SharedTypesParser.ParseObjectType(token.GetString(JsonStringConstants.Type)),
+                Type = ObjectTypeMapper.Map(token.GetString(JsonStringConstants.Type)),
                 Minimum = token.GetInteger(JsonStringConstants.Minimum),
                 Enum = token.GetArray(JsonStringConstants.Enum)?.Select(item => item.Beautify()),
                 EnumNames = token.GetArray(JsonStringConstants.EnumNames)?.Select(item => item.Beautify()),

@@ -7,7 +7,7 @@ namespace VKApiSchemaParser.Extensions
 {
     internal static class JTokenExtensions
     {
-        public static bool HasValue(this JToken token, string propertyName, out JToken value)
+        public static bool TryGetValue(this JToken token, string propertyName, out JToken value)
         {
             if (token[propertyName] != null)
             {
@@ -21,7 +21,7 @@ namespace VKApiSchemaParser.Extensions
 
         public static T UseValueOrDefault<T>(this JToken token, string propertyName, Func<JToken, T> function)
         {
-            return function != null && HasValue(token, propertyName, out JToken resultToken) ? 
+            return function != null && TryGetValue(token, propertyName, out JToken resultToken) ? 
                 function(resultToken) : 
                 default(T);
         }
@@ -33,13 +33,13 @@ namespace VKApiSchemaParser.Extensions
 
         public static int? GetInteger(this JToken token, string propertyName)
         {
-            return token.HasValue(propertyName, out JToken result) &&
+            return token.TryGetValue(propertyName, out JToken result) &&
                 int.TryParse(result.ToString(), out int value) ? (int?)value : null;
         }
 
         public static bool? GetBoolean(this JToken token, string propertyName)
         {
-            return token.HasValue(propertyName, out JToken result) &&
+            return token.TryGetValue(propertyName, out JToken result) &&
                    bool.TryParse(result.ToString(), out bool value) ? (bool?)value : null;
         }
 

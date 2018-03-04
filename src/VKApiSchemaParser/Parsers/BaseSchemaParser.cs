@@ -3,7 +3,7 @@ using Newtonsoft.Json.Schema;
 
 namespace VKApiSchemaParser.Parsers
 {
-    internal abstract class SchemaParser<T>
+    internal abstract class BaseSchemaParser<T>
     {
         protected abstract string SchemaDownloadUrl { get; }
 

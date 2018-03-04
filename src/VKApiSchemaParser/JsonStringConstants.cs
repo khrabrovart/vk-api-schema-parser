@@ -1,4 +1,4 @@
-﻿namespace VKApiSchemaParser.Parsers
+﻿namespace VKApiSchemaParser
 {
     internal static class JsonStringConstants
     {
