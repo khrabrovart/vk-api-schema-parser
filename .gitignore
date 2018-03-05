@@ -2,4 +2,5 @@ src/CitrinaCodeGen/bin/
 src/CitrinaCodeGen/obj/
 src/VKApiSchemaParser/bin/
 src/VKApiSchemaParser/obj/
+src/ConsoleApp1/
 src/.vs/

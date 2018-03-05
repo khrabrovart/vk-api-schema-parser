@@ -62,6 +62,11 @@ namespace VKApiSchemaParser.Parsers
             return ParseObject(token, false);
         }
 
+        // TODO: Parse object names only for properties and top-level objects.
+        // AllOf (if it's not reference) and Items objects don't need names.
+
+        // TODO: Enum values (not EnumNames) should be written in the snake_case because
+        // that values are being sent to VK.
         private ApiObject ParseObject(JToken token, bool needRegistration)
         {
             // Name
