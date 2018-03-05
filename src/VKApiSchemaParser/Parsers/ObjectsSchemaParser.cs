@@ -70,7 +70,7 @@ namespace VKApiSchemaParser.Parsers
             var obj = new ApiObject();
 
             // All registered objects have names. Objects without names cannot be registered.
-            if (options == ObjectParsingOptions.Named)
+            if (options >= ObjectParsingOptions.Named)
             {
                 var name = token.Path.Split('.').Last();
                 obj.Name = name?.Beautify();

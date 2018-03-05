@@ -756,7 +756,9 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\khrabrov.a\\.nuget\\packages\\": {},
+    "C:\\Users\\monte\\.nuget\\packages\\": {},
+    "C:\\Users\\monte\\.dotnet\\NuGetFallbackFolder": {},
+    "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
@@ -765,32 +767,34 @@
       "hideWarningsAndErrors": true
     },
     "restore": {
-      "projectUniqueName": "C:\\Git\\vk-api-schema-parser\\src\\ConsoleApp1\\ConsoleApp1.csproj",
-      "projectName": "ConsoleApp1",
-      "projectPath": "C:\\Git\\vk-api-schema-parser\\src\\ConsoleApp1\\ConsoleApp1.csproj",
-      "packagesPath": "C:\\Users\\khrabrov.a\\.nuget\\packages\\",
-      "outputPath": "C:\\Git\\vk-api-schema-parser\\src\\ConsoleApp1\\obj\\",
+      "projectUniqueName": "E:\\Git\\VKApiSchemaParser\\src\\ConsoleApp2\\ConsoleApp2.csproj",
+      "projectName": "ConsoleApp2",
+      "projectPath": "E:\\Git\\VKApiSchemaParser\\src\\ConsoleApp2\\ConsoleApp2.csproj",
+      "packagesPath": "C:\\Users\\monte\\.nuget\\packages\\",
+      "outputPath": "E:\\Git\\VKApiSchemaParser\\src\\ConsoleApp2\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
+        "C:\\Users\\monte\\.dotnet\\NuGetFallbackFolder",
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\khrabrov.a\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\monte\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.Fallback.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.0"
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "https://api.nuget.org/v3/index.json": {},
-        "https://repo-dev.helix.ru/NugetFeed/nuget": {}
+        "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "netcoreapp2.0": {
           "projectReferences": {
-            "C:\\Git\\vk-api-schema-parser\\src\\VKApiSchemaParser\\VKApiSchemaParser.csproj": {
-              "projectPath": "C:\\Git\\vk-api-schema-parser\\src\\VKApiSchemaParser\\VKApiSchemaParser.csproj"
+            "E:\\Git\\VKApiSchemaParser\\src\\VKApiSchemaParser\\VKApiSchemaParser.csproj": {
+              "projectPath": "E:\\Git\\VKApiSchemaParser\\src\\VKApiSchemaParser\\VKApiSchemaParser.csproj"
             }
           }
         }

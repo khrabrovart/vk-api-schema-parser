@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using VKApiSchemaParser;
 
-namespace ConsoleApp1
+namespace ConsoleApp2
 {
     class Program
     {

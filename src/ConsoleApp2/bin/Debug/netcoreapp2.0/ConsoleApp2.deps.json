@@ -6,12 +6,12 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v2.0": {
-      "ConsoleApp1/1.0.0": {
+      "ConsoleApp2/1.0.0": {
         "dependencies": {
           "VKApiSchemaParser": "1.0.0"
         },
         "runtime": {
-          "ConsoleApp1.dll": {}
+          "ConsoleApp2.dll": {}
         }
       },
       "Newtonsoft.Json/11.0.1": {
@@ -39,7 +39,7 @@
     }
   },
   "libraries": {
-    "ConsoleApp1/1.0.0": {
+    "ConsoleApp2/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
