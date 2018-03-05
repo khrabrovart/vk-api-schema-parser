@@ -10,6 +10,13 @@ namespace VKApiSchemaParser.Parsers
 {
     internal class ObjectsSchemaParser : BaseSchemaParser<ApiObjectsSchema>
     {
+        private enum ObjectParsingOptions
+        {
+            Unnamed,
+            Named,
+            NamedAndRegistered
+        }
+
         private const string SelfReference = "#/definitions/";
 
         protected override string SchemaDownloadUrl => SchemaUrl.Objects;
@@ -25,7 +32,7 @@ namespace VKApiSchemaParser.Parsers
             {
                 if (!_apiObjects.ContainsKey(definition.Path))
                 {
-                    ParseObject(definition.First, true);
+                    ParseObject(definition.First, ObjectParsingOptions.NamedAndRegistered);
                 }
             }
 
@@ -39,15 +46,11 @@ namespace VKApiSchemaParser.Parsers
 
         private ApiObject ResolveReference(string referencePath)
         {
-            // Checking for self reference, issue https://github.com/VKCOM/vk-api-schema/issues/35
-            if (referencePath.StartsWith(SelfReference))
-            {
-                referencePath = referencePath.Substring(SelfReference.Length);
-            }
+            referencePath = referencePath.Substring(SelfReference.Length);
 
             return _apiObjects.ContainsKey(referencePath) ?
                 _apiObjects[referencePath] :
-                ParseObject(_definitions.First(d => d.Path == referencePath).First, true);
+                ParseObject(_definitions.First(d => d.Path == referencePath).First, ObjectParsingOptions.NamedAndRegistered);
         }
 
         private ApiObject ParseNestedObject(JToken token)
@@ -59,37 +62,34 @@ namespace VKApiSchemaParser.Parsers
                 return ResolveReference(referencePath);
             }
 
-            return ParseObject(token, false);
+            return ParseObject(token, ObjectParsingOptions.Unnamed);
         }
 
-        // TODO: Parse object names only for properties and top-level objects.
-        // AllOf (if it's not reference) and Items objects don't need names.
-
-        // TODO: Enum values (not EnumNames) should be written in the snake_case because
-        // that values are being sent to VK.
-        private ApiObject ParseObject(JToken token, bool needRegistration)
+        private ApiObject ParseObject(JToken token, ObjectParsingOptions options)
         {
-            // Name
-            var name = token.Path.Split('.').Last();
-            var obj = new ApiObject
-            {
-                Name = name?.Beautify(),
-                OriginalName = name
-            };
+            var obj = new ApiObject();
 
-            /*
-             * Registered objects are stored in the _apiObjects dictionary.
-             * This is the main list of parsed objects and registration is 
-             * only needed for top-level objects.
-             */
-            if (needRegistration)
+            // All registered objects have names. Objects without names cannot be registered.
+            if (options == ObjectParsingOptions.Named)
             {
-                if (string.IsNullOrWhiteSpace(name))
+                var name = token.Path.Split('.').Last();
+                obj.Name = name?.Beautify();
+                obj.OriginalName = name;
+
+                /*
+                 * Registered objects are stored in the _apiObjects dictionary.
+                 * This is the main list of parsed objects and registration is 
+                 * only needed for top-level objects.
+                 */
+                if (options == ObjectParsingOptions.NamedAndRegistered)
                 {
-                    throw new ArgumentNullException("Invalid name.", nameof(name));
-                }
+                    if (string.IsNullOrWhiteSpace(name))
+                    {
+                        throw new ArgumentNullException("Invalid name.", nameof(name));
+                    }
 
-                _apiObjects.Add(name, obj);
+                    _apiObjects.Add(name, obj);
+                }
             }
 
             // Type
@@ -105,7 +105,7 @@ namespace VKApiSchemaParser.Parsers
                 .Where(p => p.First != null)
                 .Select(p =>
                 {
-                    var newObject = ParseObject(p.First, false);
+                    var newObject = ParseObject(p.First, ObjectParsingOptions.Named);
 
                     if (requiredProperties != null)
                     {
@@ -122,13 +122,13 @@ namespace VKApiSchemaParser.Parsers
             // Other
             obj.Description = token.GetString(JsonStringConstants.Description);
             obj.Minimum = token.GetInteger(JsonStringConstants.Minimum);
-            obj.Enum = token.GetArray(JsonStringConstants.Enum)?.Select(item => item.Beautify());
+            obj.Enum = token.GetArray(JsonStringConstants.Enum);
             obj.EnumNames = token.GetArray(JsonStringConstants.EnumNames)?.Select(item => item.Beautify());
             obj.MinProperties = token.GetInteger(JsonStringConstants.MinProperties);
             obj.AdditionalProperties = token.GetBoolean(JsonStringConstants.AdditionalProperties) == true;
             obj.Items = token.UseValueOrDefault(JsonStringConstants.Items, ParseNestedObject);
-            obj.AllOf = token.UseValueOrDefault(JsonStringConstants.AllOf, t => t?.Select(ParseNestedObject));
-            obj.OneOf = token.UseValueOrDefault(JsonStringConstants.OneOf, t => t?.Select(ParseNestedObject));
+            obj.AllOf = token.UseValueOrDefault(JsonStringConstants.AllOf, t => t.Select(ParseNestedObject));
+            obj.OneOf = token.UseValueOrDefault(JsonStringConstants.OneOf, t => t.Select(ParseNestedObject));
 
             return obj;
         }
