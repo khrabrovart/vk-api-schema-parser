@@ -17,8 +17,6 @@ namespace VKApiSchemaParser.Parsers
             NamedAndRegistered
         }
 
-        private const string SelfReference = "#/definitions/";
-
         protected override string SchemaDownloadUrl => SchemaUrl.Objects;
 
         private JToken _definitions;
@@ -32,7 +30,7 @@ namespace VKApiSchemaParser.Parsers
             {
                 if (!_apiObjects.ContainsKey(definition.Path))
                 {
-                    ParseObject(definition.First, ObjectParsingOptions.NamedAndRegistered);
+                    ParseObject(SelectObject(definition), ObjectParsingOptions.NamedAndRegistered);
                 }
             }
 
@@ -44,9 +42,19 @@ namespace VKApiSchemaParser.Parsers
             };
         }
 
+        protected virtual JToken SelectObject(JToken definition)
+        {
+            return definition.First;
+        }
+
         private ApiObject ResolveReference(string referencePath)
         {
-            referencePath = referencePath.Substring(SelfReference.Length);
+            referencePath = referencePath.Split('/').LastOrDefault();
+
+            if (string.IsNullOrWhiteSpace(referencePath))
+            {
+                throw new Exception($"Invalid reference \"{referencePath}\"");
+            }
 
             return _apiObjects.ContainsKey(referencePath) ?
                 _apiObjects[referencePath] :
@@ -72,7 +80,13 @@ namespace VKApiSchemaParser.Parsers
             // All registered objects have names. Objects without names cannot be registered.
             if (options >= ObjectParsingOptions.Named)
             {
-                var name = token.Path.Split('.').Last();
+                var name = token.Path.Split('.').LastOrDefault();
+
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    throw new Exception($"Invalid name \"{name}\"");
+                }
+
                 obj.Name = name?.Beautify();
                 obj.OriginalName = name;
 
@@ -83,11 +97,6 @@ namespace VKApiSchemaParser.Parsers
                  */
                 if (options == ObjectParsingOptions.NamedAndRegistered)
                 {
-                    if (string.IsNullOrWhiteSpace(name))
-                    {
-                        throw new ArgumentNullException("Invalid name.", nameof(name));
-                    }
-
                     _apiObjects.Add(name, obj);
                 }
             }

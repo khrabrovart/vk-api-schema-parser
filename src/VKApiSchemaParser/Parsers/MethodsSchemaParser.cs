@@ -13,7 +13,7 @@ namespace VKApiSchemaParser.Parsers
 
         protected override string SchemaDownloadUrl => SchemaUrl.Methods;
 
-        private ApiResponsesSchema _responses;
+        private ApiObjectsSchema _responses;
 
         protected override ApiMethodsSchema Parse(JSchema schema)
         {
@@ -128,7 +128,7 @@ namespace VKApiSchemaParser.Parsers
             }));
         }
 
-        private ApiResponse ResolveReference(string reference)
+        private ApiObject ResolveReference(string reference)
         {
             if (string.IsNullOrWhiteSpace(reference))
             {
@@ -138,7 +138,7 @@ namespace VKApiSchemaParser.Parsers
             if (reference.StartsWith(ResponsesReference))
             {
                 var referenceObjectName = reference.Substring(ResponsesReference.Length);
-                return _responses.Responses.FirstOrDefault(o => o.OriginalName.Equals(referenceObjectName));
+                return _responses.Objects.FirstOrDefault(o => o.OriginalName.Equals(referenceObjectName));
             }
 
             return null;

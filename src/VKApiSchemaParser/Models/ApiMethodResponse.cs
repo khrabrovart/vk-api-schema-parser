@@ -4,6 +4,6 @@
     {
         public string Name { get; set; }
         public string ReferencePath { get; set; }
-        public ApiResponse Reference { get; set; }
+        public ApiObject Reference { get; set; }
     }
 }

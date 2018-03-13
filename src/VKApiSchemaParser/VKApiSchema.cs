@@ -22,7 +22,7 @@ namespace VKApiSchemaParser
             return _objectsSchemaParser.ParseAsync();
         }
 
-        public Task<ApiResponsesSchema> GetResponsesAsync()
+        public Task<ApiObjectsSchema> GetResponsesAsync()
         {
             return _responsesSchemaParser.ParseAsync();
         }

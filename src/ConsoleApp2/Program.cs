@@ -45,8 +45,8 @@ namespace ConsoleApp2
             };
 
             var vkapi = new VKApiSchema();
-            var a = vkapi.GetObjectsAsync().Result;
-            a.Objects = a.Objects.Where(o => testSet.Contains(o.OriginalName));
+            var a = vkapi.GetResponsesAsync().Result;
+            //a.Objects = a.Objects.Where(o => testSet.Contains(o.OriginalName));
             var j = JsonConvert.SerializeObject(a, new JsonSerializerSettings
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
