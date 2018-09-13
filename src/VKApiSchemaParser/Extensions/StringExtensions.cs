@@ -7,8 +7,9 @@ namespace VKApiSchemaParser.Extensions
         public static string Beautify(this string str)
         {
             return str
+                .Trim()
                 .Split('_', ' ')
-                .Aggregate("", (r, p) => r + p[0].ToString().ToUpper() + p.Substring(1));
+                .Aggregate(string.Empty, (r, p) => r + p[0].ToString().ToUpper() + p.Substring(1));
         }
     }
 }

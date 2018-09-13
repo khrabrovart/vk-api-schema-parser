@@ -7,7 +7,7 @@ namespace VKApiSchemaParser.Extensions
 {
     internal static class JTokenExtensions
     {
-        public static bool TryGetValue(this JToken token, string propertyName, out JToken value)
+        public static bool TryGetProperty(this JToken token, string propertyName, out JToken value)
         {
             if (token[propertyName] != null)
             {
@@ -19,33 +19,33 @@ namespace VKApiSchemaParser.Extensions
             return false;
         }
 
-        public static T UseValueOrDefault<T>(this JToken token, string propertyName, Func<JToken, T> function)
+        public static T SelectPropertyOrDefault<T>(this JToken token, string propertyName, Func<JToken, T> selector)
         {
-            return function != null && TryGetValue(token, propertyName, out JToken resultToken) ? 
-                function(resultToken) : 
+            return selector != null && TryGetProperty(token, propertyName, out JToken resultToken) ? 
+                selector(resultToken) : 
                 default(T);
         }
 
-        public static string GetString(this JToken token, string propertyName)
+        public static string GetPropertyAsString(this JToken token, string propertyName)
         {
-            return UseValueOrDefault(token, propertyName, t => t.ToString());
+            return SelectPropertyOrDefault(token, propertyName, t => t.ToString());
         }
 
-        public static int? GetInteger(this JToken token, string propertyName)
+        public static int? GetPropertyAsInteger(this JToken token, string propertyName)
         {
-            return token.TryGetValue(propertyName, out JToken result) &&
+            return token.TryGetProperty(propertyName, out JToken result) &&
                 int.TryParse(result.ToString(), out int value) ? (int?)value : null;
         }
 
-        public static bool? GetBoolean(this JToken token, string propertyName)
+        public static bool? GetPropertyAsBoolean(this JToken token, string propertyName)
         {
-            return token.TryGetValue(propertyName, out JToken result) &&
+            return token.TryGetProperty(propertyName, out JToken result) &&
                    bool.TryParse(result.ToString(), out bool value) ? (bool?)value : null;
         }
 
-        public static IEnumerable<string> GetArray(this JToken token, string propertyName)
+        public static IEnumerable<string> GetPropertyAsArray(this JToken token, string propertyName)
         {
-            return token.UseValueOrDefault(propertyName, t => t.Children().Select(c => c.ToString()));
+            return token.SelectPropertyOrDefault(propertyName, t => t.Children().Select(c => c.ToString()));
         }
     }
 }

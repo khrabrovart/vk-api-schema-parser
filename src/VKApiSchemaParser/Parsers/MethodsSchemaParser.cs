@@ -33,9 +33,9 @@ namespace VKApiSchemaParser.Parsers
         {
             return token?.Children().Select(c => new ApiError
             {
-                Name = c.GetString(JsonStringConstants.Name),
-                Code = c.GetInteger(JsonStringConstants.Code),
-                Description = c.GetString(JsonStringConstants.Description)
+                Name = c.GetPropertyAsString(JsonStringConstants.Name),
+                Code = c.GetPropertyAsInteger(JsonStringConstants.Code),
+                Description = c.GetPropertyAsString(JsonStringConstants.Description)
             });
         }
 
@@ -44,14 +44,14 @@ namespace VKApiSchemaParser.Parsers
             return token?.Children()
                 .Select(c => new ApiMethod
                 {
-                    MethodGroup = GetMethodGroup(c.GetString(JsonStringConstants.Name)),
-                    Name = GetMethodName(c.GetString(JsonStringConstants.Name)),
-                    OriginalName = c.GetString(JsonStringConstants.Name),
-                    Description = c.GetString(JsonStringConstants.Description),
+                    MethodGroup = GetMethodGroup(c.GetPropertyAsString(JsonStringConstants.Name)),
+                    Name = GetMethodName(c.GetPropertyAsString(JsonStringConstants.Name)),
+                    OriginalName = c.GetPropertyAsString(JsonStringConstants.Name),
+                    Description = c.GetPropertyAsString(JsonStringConstants.Description),
                     AccessTokenTypes = GetAccessTokenTypes(c),
                     Parameters = GetMethodParameters(c),
-                    Errors = c.UseValueOrDefault(JsonStringConstants.Errors, GetErrors),
-                    Responses = c.UseValueOrDefault(JsonStringConstants.Responses, GetResponses)
+                    Errors = c.SelectPropertyOrDefault(JsonStringConstants.Errors, GetErrors),
+                    Responses = c.SelectPropertyOrDefault(JsonStringConstants.Responses, GetResponses)
                 });
         }
 
@@ -70,14 +70,14 @@ namespace VKApiSchemaParser.Parsers
             return token.Children().Select(r => new ApiMethodResponse
             {
                 Name = r.Path.Split('.').Last().Beautify(),
-                ReferencePath = r.First.GetString(JsonStringConstants.Reference),
-                Reference = ResolveReference(r.First.GetString(JsonStringConstants.Reference))
+                ReferencePath = r.First.GetPropertyAsString(JsonStringConstants.Reference),
+                Reference = ResolveReference(r.First.GetPropertyAsString(JsonStringConstants.Reference))
             });
         }
 
         private IEnumerable<ApiAccessTokenType> GetAccessTokenTypes(JToken token)
         {
-            return token.UseValueOrDefault(JsonStringConstants.AccessTokenType, t => t.Children().Select(c =>
+            return token.SelectPropertyOrDefault(JsonStringConstants.AccessTokenType, t => t.Children().Select(c =>
             {
                 switch (c.ToString())
                 {
@@ -101,29 +101,29 @@ namespace VKApiSchemaParser.Parsers
 
         private ApiMethodParameterItems GetMethodParameterItems(JToken token)
         {
-            return token.UseValueOrDefault(JsonStringConstants.Items, t => new ApiMethodParameterItems
+            return token.SelectPropertyOrDefault(JsonStringConstants.Items, t => new ApiMethodParameterItems
             {
-                Type = ObjectTypeMapper.Map(t.GetString(JsonStringConstants.Type)),
-                Minimum = t.GetInteger(JsonStringConstants.Minimum),
-                Enum = t.GetArray(JsonStringConstants.Enum)?.Select(item => item.Beautify())
+                Type = ObjectTypeMapper.Map(t.GetPropertyAsString(JsonStringConstants.Type)),
+                Minimum = t.GetPropertyAsInteger(JsonStringConstants.Minimum),
+                Enum = t.GetPropertyAsArray(JsonStringConstants.Enum)?.Select(item => item.Beautify())
             });
         }
 
         private IEnumerable<ApiMethodParameter> GetMethodParameters(JToken token)
         {
-            return token.UseValueOrDefault(JsonStringConstants.Parameters, t => t?.Select(p => new ApiMethodParameter
+            return token.SelectPropertyOrDefault(JsonStringConstants.Parameters, t => t?.Select(p => new ApiMethodParameter
             {
-                Name = p.GetString(JsonStringConstants.Name).Beautify(),
-                OriginalName = p.GetString(JsonStringConstants.Name),
-                Description = p.GetString(JsonStringConstants.Description),
-                Type = ObjectTypeMapper.Map(p.GetString(JsonStringConstants.Type)),
-                Minimum = p.GetInteger(JsonStringConstants.Minimum),
-                Maximum = p.GetInteger(JsonStringConstants.Maximum),
-                Default = p.GetInteger(JsonStringConstants.Default),
-                MaxItems = p.GetInteger(JsonStringConstants.MaxItems),
-                Required = p.GetBoolean(JsonStringConstants.Required) == true,
-                Enum = p.GetArray(JsonStringConstants.Enum)?.Select(item => item.Beautify()),
-                EnumNames = p.GetArray(JsonStringConstants.EnumNames)?.Select(item => item.Beautify()),
+                Name = p.GetPropertyAsString(JsonStringConstants.Name).Beautify(),
+                OriginalName = p.GetPropertyAsString(JsonStringConstants.Name),
+                Description = p.GetPropertyAsString(JsonStringConstants.Description),
+                Type = ObjectTypeMapper.Map(p.GetPropertyAsString(JsonStringConstants.Type)),
+                Minimum = p.GetPropertyAsInteger(JsonStringConstants.Minimum),
+                Maximum = p.GetPropertyAsInteger(JsonStringConstants.Maximum),
+                Default = p.GetPropertyAsInteger(JsonStringConstants.Default),
+                MaxItems = p.GetPropertyAsInteger(JsonStringConstants.MaxItems),
+                Required = p.GetPropertyAsBoolean(JsonStringConstants.Required) == true,
+                Enum = p.GetPropertyAsArray(JsonStringConstants.Enum)?.Select(item => item.Beautify()),
+                EnumNames = p.GetPropertyAsArray(JsonStringConstants.EnumNames)?.Select(item => item.Beautify()),
                 Items = GetMethodParameterItems(p)
             }));
         }

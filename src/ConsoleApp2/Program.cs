@@ -1,17 +1,24 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
 using System.Linq;
 using VKApiSchemaParser;
+using VKApiSchemaParser.Parsers;
 
 namespace ConsoleApp2
 {
     class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
+        {
+            CheckObjects();
+        }
+
+        public static void CheckObjects()
         {
             var testSet = new string[]
-            {
+                {
                 "account_account_counters",
                 "account_lookup_result",
                 "account_name_request_status",
@@ -42,11 +49,12 @@ namespace ConsoleApp2
                 "newsfeed_newsfeed_item",
                 "notifications_notification_parent",
                 "video_video_files"
-            };
+                };
 
             var vkapi = new VKApiSchema();
-            var a = vkapi.GetResponsesAsync().Result;
-            //a.Objects = a.Objects.Where(o => testSet.Contains(o.OriginalName));
+            var a = vkapi.GetObjectsAsync().Result;
+            a.Objects = a.Objects.Where(o => testSet.Contains(o.OriginalName));
+
             var j = JsonConvert.SerializeObject(a, new JsonSerializerSettings
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
@@ -58,6 +66,13 @@ namespace ConsoleApp2
             var filePath = Path.Combine(desktopPath, $"json-{DateTime.Now.ToString("ddMMyyHHmmss")}.json");
             File.WriteAllText(filePath, j);
             Console.WriteLine();
+        }
+
+        public static void CheckResonses()
+        {
+            var vkapi = new MethodsParser();
+            var a = vkapi.ParseAsync(JToken.Parse("{}")).Result;
+            Console.ReadKey();
         }
     }
 }

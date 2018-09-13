@@ -1,30 +1,24 @@
-﻿using VKApiSchemaParser.Models;
+﻿using System.Collections.Generic;
+using VKApiSchemaParser.Models;
 
 namespace VKApiSchemaParser
 {
     internal static class ObjectTypeMapper
     {
+        private static IDictionary<string, ApiObjectType> TypesMapping = new Dictionary<string, ApiObjectType>
+        {
+            { JsonStringConstants.Multiple, ApiObjectType.Multiple },
+            { JsonStringConstants.Object, ApiObjectType.Object },
+            { JsonStringConstants.Integer, ApiObjectType.Integer },
+            { JsonStringConstants.String, ApiObjectType.String },
+            { JsonStringConstants.Array, ApiObjectType.Array },
+            { JsonStringConstants.Number, ApiObjectType.Number },
+            { JsonStringConstants.Boolean, ApiObjectType.Boolean }
+        };
+
         public static ApiObjectType Map(string typeName)
         {
-            switch (typeName)
-            {
-                case JsonStringConstants.Multiple:
-                    return ApiObjectType.Multiple;
-                case JsonStringConstants.Object:
-                    return ApiObjectType.Object;
-                case JsonStringConstants.Integer:
-                    return ApiObjectType.Integer;
-                case JsonStringConstants.String:
-                    return ApiObjectType.String;
-                case JsonStringConstants.Array:
-                    return ApiObjectType.Array;
-                case JsonStringConstants.Number:
-                    return ApiObjectType.Number;
-                case JsonStringConstants.Boolean:
-                    return ApiObjectType.Boolean;
-                default:
-                    return ApiObjectType.Undefined;
-            }   
+            return TypesMapping.TryGetValue(typeName, out var objectType) ? objectType : ApiObjectType.Undefined; 
         }
     }
 }

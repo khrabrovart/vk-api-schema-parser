@@ -7,17 +7,10 @@ namespace VKApiSchemaParser.Parsers
     {
         protected abstract string SchemaDownloadUrl { get; }
 
-        private static T _parsedSchema;
-
         public async Task<T> ParseAsync()
         {
-            if (_parsedSchema == null)
-            {
-                var schema = await InitializeAsync(SchemaDownloadUrl).ConfigureAwait(false);
-                _parsedSchema = Parse(schema);
-            }
-
-            return _parsedSchema;
+            var schema = await InitializeAsync(SchemaDownloadUrl).ConfigureAwait(false);
+            return Parse(schema);
         } 
 
         protected async Task<JSchema> InitializeAsync(string schemaUrl)
