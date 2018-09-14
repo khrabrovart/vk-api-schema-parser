@@ -17,7 +17,7 @@ namespace VKApiSchemaParser.Parsers
 
         protected override ApiMethodsSchema Parse(JSchema schema)
         {
-            _responses = new ResponsesSchemaParser().ParseAsync().Result;
+            _responses = new ResponsesSchemaParser(null).ParseAsync().Result;
 
             var errors = schema.ExtensionData[JsonStringConstants.Errors];
             var methods = schema.ExtensionData[JsonStringConstants.Methods];
@@ -138,7 +138,7 @@ namespace VKApiSchemaParser.Parsers
             if (reference.StartsWith(ResponsesReference))
             {
                 var referenceObjectName = reference.Substring(ResponsesReference.Length);
-                return _responses.Objects.FirstOrDefault(o => o.OriginalName.Equals(referenceObjectName));
+                return _responses.Objects[referenceObjectName];
             }
 
             return null;

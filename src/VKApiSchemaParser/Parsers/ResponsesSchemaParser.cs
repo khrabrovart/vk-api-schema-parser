@@ -10,10 +10,16 @@ namespace VKApiSchemaParser.Parsers
 {
     internal class ResponsesSchemaParser : BaseSchemaParser<ApiObjectsSchema>
     {
-        protected override string SchemaDownloadUrl => SchemaUrl.Responses;
-
         private JToken _definitions;
-        private Dictionary<string, ApiObject> _apiObjects = new Dictionary<string, ApiObject>();
+        private IDictionary<string, ApiObject> _apiResponses = new Dictionary<string, ApiObject>();
+        private ApiObjectsSchema _objectsSchema;
+
+        public ResponsesSchemaParser(ApiObjectsSchema objectsSchema)
+        {
+            _objectsSchema = objectsSchema;
+        }
+
+        protected override string SchemaDownloadUrl => SchemaUrl.Responses;
 
         protected override ApiObjectsSchema Parse(JSchema schema)
         {
@@ -21,7 +27,7 @@ namespace VKApiSchemaParser.Parsers
 
             foreach (var definition in _definitions)
             {
-                if (!_apiObjects.ContainsKey(definition.Path))
+                if (!_apiResponses.ContainsKey(definition.Path))
                 {
                     ParseObject(definition.First, ObjectParsingOptions.NamedAndRegistered);
                 }
@@ -31,7 +37,9 @@ namespace VKApiSchemaParser.Parsers
             {
                 SchemaVersion = schema.SchemaVersion,
                 Title = schema.Title,
-                Objects = _apiObjects.Values.OrderBy(obj => obj.Name)
+                Objects = _apiResponses.Values
+                    .OrderBy(obj => obj.Name)
+                    .ToDictionary(obj => obj.OriginalName, obj => obj)
             };
         }
 
@@ -59,7 +67,7 @@ namespace VKApiSchemaParser.Parsers
                  */
                 if (options == ObjectParsingOptions.NamedAndRegistered)
                 {
-                    _apiObjects.Add(name, obj);
+                    _apiResponses.Add(name, obj);
                 }
             }
 
@@ -80,8 +88,8 @@ namespace VKApiSchemaParser.Parsers
                 throw new Exception($"Invalid reference \"{referencePath}\"");
             }
 
-            return _apiObjects.ContainsKey(referencePath) ?
-                _apiObjects[referencePath] :
+            return _objectsSchema.Objects.ContainsKey(referencePath) ?
+                _objectsSchema.Objects[referencePath] :
                 ParseObject(_definitions.First(d => d.Path == referencePath).First, ObjectParsingOptions.NamedAndRegistered);
         }
 

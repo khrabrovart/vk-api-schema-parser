@@ -7,6 +7,6 @@ namespace VKApiSchemaParser.Models
     {
         public Uri SchemaVersion { get; set; }
         public string Title { get; set; }
-        public IEnumerable<ApiObject> Objects { get; set; }
+        public IDictionary<string, ApiObject> Objects { get; set; }
     }
 }

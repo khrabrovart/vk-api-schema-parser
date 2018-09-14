@@ -12,7 +12,7 @@ namespace ConsoleApp2
     {
         public static void Main(string[] args)
         {
-            CheckObjects();
+            CheckResonses();
         }
 
         public static void CheckObjects()
@@ -53,7 +53,7 @@ namespace ConsoleApp2
 
             var vkapi = new VKApiSchema();
             var a = vkapi.GetObjectsAsync().Result;
-            a.Objects = a.Objects.Where(o => testSet.Contains(o.OriginalName));
+            a.Objects = a.Objects.Where(o => testSet.Contains(o.Key)).ToDictionary(o => o.Key, o => o.Value);
 
             var j = JsonConvert.SerializeObject(a, new JsonSerializerSettings
             {
@@ -65,14 +65,29 @@ namespace ConsoleApp2
             var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             var filePath = Path.Combine(desktopPath, $"json-{DateTime.Now.ToString("ddMMyyHHmmss")}.json");
             File.WriteAllText(filePath, j);
-            Console.WriteLine();
         }
 
         public static void CheckResonses()
         {
-            var vkapi = new MethodsParser();
-            var a = vkapi.ParseAsync(JToken.Parse("{}")).Result;
-            Console.ReadKey();
+            var testSet = new string[]
+                {
+                "ok_response"
+                };
+
+            var vkapi = new VKApiSchema();
+            var a = vkapi.GetResponsesAsync().Result;
+            a.Objects = a.Objects.Where(o => testSet.Contains(o.Key)).ToDictionary(o => o.Key, o => o.Value);
+
+            var j = JsonConvert.SerializeObject(a, new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                NullValueHandling = NullValueHandling.Ignore,
+                DefaultValueHandling = DefaultValueHandling.Ignore
+            });
+
+            var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            var filePath = Path.Combine(desktopPath, $"json-{DateTime.Now.ToString("ddMMyyHHmmss")}.json");
+            File.WriteAllText(filePath, j);
         }
     }
 }

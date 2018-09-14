@@ -11,9 +11,10 @@ namespace VKApiSchemaParser
             return new ObjectsSchemaParser().ParseAsync();
         }
 
-        public Task<ApiObjectsSchema> GetResponsesAsync()
+        public async Task<ApiObjectsSchema> GetResponsesAsync()
         {
-            return new ResponsesSchemaParser().ParseAsync();
+            var objectsSchema = await GetObjectsAsync().ConfigureAwait(false);
+            return await new ResponsesSchemaParser(objectsSchema).ParseAsync().ConfigureAwait(false);
         }
     }
 }
