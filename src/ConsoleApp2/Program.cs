@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
 using System.Linq;
@@ -12,7 +11,7 @@ namespace ConsoleApp2
     {
         public static void Main(string[] args)
         {
-            CheckResonses();
+            CheckObjects();
         }
 
         public static void CheckObjects()
@@ -53,7 +52,7 @@ namespace ConsoleApp2
 
             var vkapi = new VKApiSchema();
             var a = vkapi.GetObjectsAsync().Result;
-            a.Objects = a.Objects.Where(o => testSet.Contains(o.Key)).ToDictionary(o => o.Key, o => o.Value);
+            //a.Objects = a.Objects.Where(o => testSet.Contains(o.Key)).ToDictionary(o => o.Key, o => o.Value);
 
             var j = JsonConvert.SerializeObject(a, new JsonSerializerSettings
             {
@@ -61,6 +60,8 @@ namespace ConsoleApp2
                 NullValueHandling = NullValueHandling.Ignore,
                 DefaultValueHandling = DefaultValueHandling.Ignore
             });
+
+            //var m = vkapi.GetObjectsAsync().Result;
 
             var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             var filePath = Path.Combine(desktopPath, $"json-{DateTime.Now.ToString("ddMMyyHHmmss")}.json");
@@ -76,7 +77,10 @@ namespace ConsoleApp2
 
             var vkapi = new VKApiSchema();
             var a = vkapi.GetResponsesAsync().Result;
-            a.Objects = a.Objects.Where(o => testSet.Contains(o.Key)).ToDictionary(o => o.Key, o => o.Value);
+            //var n = a.Objects.Where(o => o.Value.PatternProperties != VKApiSchemaParser.Models.ApiObjectType.Object).ToArray();
+            // У всех объектов в ответах есть только одно свойство - response,
+            // поэтому имеет смысл вместо парсинга объекта полностью использовать объект из свойства response.
+            //a.Objects = a.Objects.Where(o => testSet.Contains(o.Key)).ToDictionary(o => o.Key, o => o.Value);
 
             var j = JsonConvert.SerializeObject(a, new JsonSerializerSettings
             {
@@ -84,6 +88,8 @@ namespace ConsoleApp2
                 NullValueHandling = NullValueHandling.Ignore,
                 DefaultValueHandling = DefaultValueHandling.Ignore
             });
+
+            var m = vkapi.GetResponsesAsync().Result;
 
             var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             var filePath = Path.Combine(desktopPath, $"json-{DateTime.Now.ToString("ddMMyyHHmmss")}.json");

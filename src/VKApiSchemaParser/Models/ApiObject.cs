@@ -41,6 +41,12 @@ namespace VKApiSchemaParser.Models
         public IEnumerable<ApiObject> Properties { get; set; }
 
         /// <summary>
+        /// Gets or sets object's pattern properties list.
+        /// Pattern properties are properties whose names are represented as a regular expressions.
+        /// </summary>
+        public IEnumerable<ApiObject> PatternProperties { get; set; }
+
+        /// <summary>
         /// Gets or sets object's allOf list.
         /// Typically it has one reference as parent object and
         /// one object with properties.
@@ -63,9 +69,11 @@ namespace VKApiSchemaParser.Models
         public IEnumerable<string> EnumNames { get; set; }
 
         /// <summary>
-        /// Gets or sets object's minimum number of properties?
+        /// Gets or sets object's minimum number of properties.
         /// </summary>
         public int? MinProperties { get; set; }
+
+        public int? MaxProperties { get; set; }
 
         /// <summary>
         /// Gets or sets object's additional properties value.

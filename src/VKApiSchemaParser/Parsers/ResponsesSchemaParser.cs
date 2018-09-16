@@ -10,6 +10,8 @@ namespace VKApiSchemaParser.Parsers
 {
     internal class ResponsesSchemaParser : BaseSchemaParser<ApiObjectsSchema>
     {
+        private static List<string> p = new List<string>();
+
         private JToken _definitions;
         private IDictionary<string, ApiObject> _apiResponses = new Dictionary<string, ApiObject>();
         private ApiObjectsSchema _objectsSchema;
@@ -23,6 +25,7 @@ namespace VKApiSchemaParser.Parsers
 
         protected override ApiObjectsSchema Parse(JSchema schema)
         {
+            p = p.Distinct().OrderBy(o => o).ToList();
             _definitions = schema.ExtensionData[JsonStringConstants.Definitions];
 
             foreach (var definition in _definitions)
@@ -43,7 +46,21 @@ namespace VKApiSchemaParser.Parsers
             };
         }
 
-        public ApiObject ParseObject(JToken token, ObjectParsingOptions options)
+        protected override ApiObject ResolveReference(string referencePath)
+        {
+            referencePath = referencePath.Split('/').LastOrDefault();
+
+            if (string.IsNullOrWhiteSpace(referencePath))
+            {
+                throw new Exception($"Invalid reference \"{referencePath}\"");
+            }
+
+            // Object database_street is missing, issue https://github.com/VKCOM/vk-api-schema/issues/44
+            return _objectsSchema.Objects.ContainsKey(referencePath) ?
+                _objectsSchema.Objects[referencePath] : null; // Replace NULL with Exception later
+        }
+
+        protected override ApiObject ParseObject(JToken token, ObjectParsingOptions options)
         {
             var obj = new ApiObject();
 
@@ -60,16 +77,14 @@ namespace VKApiSchemaParser.Parsers
                 obj.Name = name?.Beautify();
                 obj.OriginalName = name;
 
-                /*
-                 * Registered objects are stored in the _apiObjects dictionary.
-                 * This is the main list of parsed objects and registration is 
-                 * only needed for top-level objects.
-                 */
+                // Registration is only needed for top-level objects.
                 if (options == ObjectParsingOptions.NamedAndRegistered)
                 {
                     _apiResponses.Add(name, obj);
                 }
             }
+
+            p.AddRange(token.Children().Select(t => t.Path.Split('.').Last()));
 
             FillType(obj, token);
             FillProperties(obj, token);
@@ -77,78 +92,6 @@ namespace VKApiSchemaParser.Parsers
             FillOther(obj, token);
 
             return obj;
-        }
-
-        private ApiObject ResolveReference(string referencePath)
-        {
-            referencePath = referencePath.Split('/').LastOrDefault();
-
-            if (string.IsNullOrWhiteSpace(referencePath))
-            {
-                throw new Exception($"Invalid reference \"{referencePath}\"");
-            }
-
-            return _objectsSchema.Objects.ContainsKey(referencePath) ?
-                _objectsSchema.Objects[referencePath] :
-                ParseObject(_definitions.First(d => d.Path == referencePath).First, ObjectParsingOptions.NamedAndRegistered);
-        }
-
-        private ApiObject ParseNestedObject(JToken token)
-        {
-            var referencePath = token.GetPropertyAsString(JsonStringConstants.Reference);
-
-            if (!string.IsNullOrWhiteSpace(referencePath))
-            {
-                return ResolveReference(referencePath);
-            }
-
-            return ParseObject(token, ObjectParsingOptions.Unnamed);
-        }
-
-        private void FillType(ApiObject obj, JToken token)
-        {
-            var type = token.GetPropertyAsArray(JsonStringConstants.Type)?.Count() > 1 ?
-                JsonStringConstants.Multiple :
-                token.GetPropertyAsString(JsonStringConstants.Type);
-            obj.Type = ObjectTypeMapper.Map(type);
-            obj.OriginalTypeName = type;
-        }
-
-        private void FillProperties(ApiObject obj, JToken token)
-        {
-            var requiredProperties = token.GetPropertyAsArray(JsonStringConstants.Required);
-            obj.Properties = token.SelectPropertyOrDefault(JsonStringConstants.Properties, t => t
-                .Where(p => p.First != null)
-                .Select(p =>
-                {
-                    var newObject = ParseObject(p.First, ObjectParsingOptions.Named);
-
-                    if (requiredProperties != null)
-                    {
-                        newObject.IsRequired = requiredProperties.Contains(newObject.OriginalName);
-                    }
-
-                    return newObject;
-                }));
-        }
-
-        private void FillReference(ApiObject obj, JToken token)
-        {
-            var reference = token.GetPropertyAsString(JsonStringConstants.Reference);
-            obj.Reference = string.IsNullOrWhiteSpace(reference) ? null : ResolveReference(reference);
-        }
-
-        private void FillOther(ApiObject obj, JToken token)
-        {
-            obj.Description = token.GetPropertyAsString(JsonStringConstants.Description);
-            obj.Minimum = token.GetPropertyAsInteger(JsonStringConstants.Minimum);
-            obj.Enum = token.GetPropertyAsArray(JsonStringConstants.Enum);
-            obj.EnumNames = token.GetPropertyAsArray(JsonStringConstants.EnumNames)?.Select(item => item.Beautify());
-            obj.MinProperties = token.GetPropertyAsInteger(JsonStringConstants.MinProperties);
-            obj.AdditionalProperties = token.GetPropertyAsBoolean(JsonStringConstants.AdditionalProperties) == true;
-            obj.Items = token.SelectPropertyOrDefault(JsonStringConstants.Items, ParseNestedObject);
-            obj.AllOf = token.SelectPropertyOrDefault(JsonStringConstants.AllOf, t => t.Select(ParseNestedObject));
-            obj.OneOf = token.SelectPropertyOrDefault(JsonStringConstants.OneOf, t => t.Select(ParseNestedObject));
         }
     }
 }

@@ -5,6 +5,7 @@
         public const string Definitions = "definitions";
         public const string Type = "type";
         public const string Properties = "properties";
+        public const string PatternProperties = "patternProperties";
         public const string Description = "description";
         public const string Minimum = "minimum";
         public const string Enum = "enum";
@@ -27,6 +28,7 @@
         public const string Default = "default";
         public const string MaxItems = "maxItems";
         public const string MinProperties = "minProperties";
+        public const string MaxProperties = "maxProperties";
 
         #region Types
 
