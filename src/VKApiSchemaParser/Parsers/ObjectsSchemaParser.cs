@@ -10,8 +10,6 @@ namespace VKApiSchemaParser.Parsers
 {
     internal class ObjectsSchemaParser : BaseSchemaParser<ApiObjectsSchema>
     {
-        private static List<string> p = new List<string>();
-
         private JToken _definitions;
         private Dictionary<string, ApiObject> _apiObjects = new Dictionary<string, ApiObject>();
 
@@ -19,7 +17,6 @@ namespace VKApiSchemaParser.Parsers
 
         protected override ApiObjectsSchema Parse(JSchema schema)
         {
-            p = p.Distinct().OrderBy(o => o).ToList();
             _definitions = schema.ExtensionData[JsonStringConstants.Definitions];
 
             foreach (var definition in _definitions)
@@ -82,8 +79,6 @@ namespace VKApiSchemaParser.Parsers
                     _apiObjects.Add(name, obj);
                 }
             }
-
-            p.AddRange(token.Children().Select(t => t.Path.Split('.').Last()));
 
             FillType(obj, token);
             FillProperties(obj, token);

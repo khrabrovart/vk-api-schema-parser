@@ -11,7 +11,7 @@ namespace ConsoleApp2
     {
         public static void Main(string[] args)
         {
-            CheckObjects();
+            CheckResonses();
         }
 
         public static void CheckObjects()
@@ -61,7 +61,7 @@ namespace ConsoleApp2
                 DefaultValueHandling = DefaultValueHandling.Ignore
             });
 
-            //var m = vkapi.GetObjectsAsync().Result;
+            var m = vkapi.GetObjectsAsync().Result;
 
             var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             var filePath = Path.Combine(desktopPath, $"json-{DateTime.Now.ToString("ddMMyyHHmmss")}.json");

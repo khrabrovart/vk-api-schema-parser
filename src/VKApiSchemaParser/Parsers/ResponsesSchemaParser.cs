@@ -10,8 +10,6 @@ namespace VKApiSchemaParser.Parsers
 {
     internal class ResponsesSchemaParser : BaseSchemaParser<ApiObjectsSchema>
     {
-        private static List<string> p = new List<string>();
-
         private JToken _definitions;
         private IDictionary<string, ApiObject> _apiResponses = new Dictionary<string, ApiObject>();
         private ApiObjectsSchema _objectsSchema;
@@ -25,7 +23,6 @@ namespace VKApiSchemaParser.Parsers
 
         protected override ApiObjectsSchema Parse(JSchema schema)
         {
-            p = p.Distinct().OrderBy(o => o).ToList();
             _definitions = schema.ExtensionData[JsonStringConstants.Definitions];
 
             foreach (var definition in _definitions)
@@ -62,6 +59,26 @@ namespace VKApiSchemaParser.Parsers
 
         protected override ApiObject ParseObject(JToken token, ObjectParsingOptions options)
         {
+            if (token == null)
+            {
+                return null; // Throw exception later.
+            }
+
+            var obj = InitializeObject(token, options);
+
+            // Replacing actual response object with its 'response' property.
+            token = token[JsonStringConstants.Properties]["response"];
+
+            FillType(obj, token);
+            FillProperties(obj, token);
+            FillReference(obj, token);
+            FillOther(obj, token);
+
+            return obj;
+        }
+
+        private ApiObject InitializeObject(JToken token, ObjectParsingOptions options)
+        {
             var obj = new ApiObject();
 
             // All registered objects have names. Objects without names cannot be registered.
@@ -83,13 +100,6 @@ namespace VKApiSchemaParser.Parsers
                     _apiResponses.Add(name, obj);
                 }
             }
-
-            p.AddRange(token.Children().Select(t => t.Path.Split('.').Last()));
-
-            FillType(obj, token);
-            FillProperties(obj, token);
-            FillReference(obj, token);
-            FillOther(obj, token);
 
             return obj;
         }

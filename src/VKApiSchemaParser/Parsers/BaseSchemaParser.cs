@@ -9,6 +9,13 @@ namespace VKApiSchemaParser.Parsers
 {
     internal abstract class BaseSchemaParser<T>
     {
+        protected enum ObjectParsingOptions
+        {
+            Unnamed,
+            Named,
+            NamedAndRegistered
+        }
+
         protected abstract string SchemaDownloadUrl { get; }
 
         public async Task<T> ParseAsync()
@@ -102,10 +109,6 @@ namespace VKApiSchemaParser.Parsers
             obj.Minimum = token.GetPropertyAsInteger(JsonStringConstants.Minimum);
             obj.Enum = token.GetPropertyAsArray(JsonStringConstants.Enum);
             obj.EnumNames = token.GetPropertyAsArray(JsonStringConstants.EnumNames)?.Select(item => item.Beautify());
-
-            // Проверить, что при при парсинге объектов items не теряются какие-то свойства этих объектов из-за референсов.
-            // Проверить какие поля могут находиться внутри этих объектов вместе с референсами. Если объекты вместе с референсами не содержат других свойств,
-            // то оставить как есть.
             obj.Items = token.SelectPropertyOrDefault(JsonStringConstants.Items, ParseNestedObject);
             obj.AllOf = token.SelectPropertyOrDefault(JsonStringConstants.AllOf, t => t.Select(ParseNestedObject));
             obj.OneOf = token.SelectPropertyOrDefault(JsonStringConstants.OneOf, t => t.Select(ParseNestedObject));
