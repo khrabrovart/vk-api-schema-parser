@@ -58,6 +58,7 @@ namespace VKApiSchemaParser.Parsers
         protected void FillProperties(ApiObject obj, JToken token)
         {
             var requiredProperties = token.GetPropertyAsArray(JsonStringConstants.Required);
+
             obj.Properties = token.SelectPropertyOrDefault(JsonStringConstants.Properties, t => t
                 .Where(p => p.First != null)
                 .Select(p =>

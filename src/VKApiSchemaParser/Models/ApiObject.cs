@@ -49,7 +49,7 @@ namespace VKApiSchemaParser.Models
         /// <summary>
         /// Gets or sets object's allOf list.
         /// Typically it has one reference as parent object and
-        /// one object with properties.
+        /// one object with additional properties.
         /// </summary>
         public IEnumerable<ApiObject> AllOf { get; set; }
 
@@ -73,6 +73,9 @@ namespace VKApiSchemaParser.Models
         /// </summary>
         public int? MinProperties { get; set; }
 
+        /// <summary>
+        /// Gets or sets object's maximum number of properties.
+        /// </summary>
         public int? MaxProperties { get; set; }
 
         /// <summary>

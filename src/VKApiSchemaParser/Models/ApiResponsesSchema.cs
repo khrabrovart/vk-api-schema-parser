@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace VKApiSchemaParser.Models
 {
-    public class ApiObjectsSchema : IApiSchema
+    public class ApiResponsesSchema : IApiSchema
     {
         public Uri SchemaVersion { get; set; }
         public string Title { get; set; }

@@ -8,7 +8,7 @@ using VKApiSchemaParser.Models;
 
 namespace VKApiSchemaParser.Parsers
 {
-    internal class ResponsesSchemaParser : BaseSchemaParser<ApiObjectsSchema>
+    internal class ResponsesSchemaParser : BaseSchemaParser<ApiResponsesSchema>
     {
         private JToken _definitions;
         private IDictionary<string, ApiObject> _apiResponses = new Dictionary<string, ApiObject>();
@@ -21,7 +21,7 @@ namespace VKApiSchemaParser.Parsers
 
         protected override string SchemaDownloadUrl => SchemaUrl.Responses;
 
-        protected override ApiObjectsSchema Parse(JSchema schema)
+        protected override ApiResponsesSchema Parse(JSchema schema)
         {
             _definitions = schema.ExtensionData[JsonStringConstants.Definitions];
 
@@ -33,7 +33,7 @@ namespace VKApiSchemaParser.Parsers
                 }
             }
 
-            return new ApiObjectsSchema
+            return new ApiResponsesSchema
             {
                 SchemaVersion = schema.SchemaVersion,
                 Title = schema.Title,
@@ -67,7 +67,11 @@ namespace VKApiSchemaParser.Parsers
             var obj = InitializeObject(token, options);
 
             // Replacing actual response object with its 'response' property.
-            token = token[JsonStringConstants.Properties]["response"];
+            // Only for top-level objects that are registered.
+            if (options == ObjectParsingOptions.NamedAndRegistered)
+            {
+                token = token[JsonStringConstants.Properties]["response"];
+            }
 
             FillType(obj, token);
             FillProperties(obj, token);

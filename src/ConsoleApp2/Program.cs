@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Linq;
 using VKApiSchemaParser;
-using VKApiSchemaParser.Parsers;
+using VKApiSchemaParser.Models;
 
 namespace ConsoleApp2
 {
@@ -52,48 +52,58 @@ namespace ConsoleApp2
 
             var vkapi = new VKApiSchema();
             var a = vkapi.GetObjectsAsync().Result;
-            //a.Objects = a.Objects.Where(o => testSet.Contains(o.Key)).ToDictionary(o => o.Key, o => o.Value);
+            a.Objects = a.Objects.Where(o => testSet.Contains(o.Key)).ToDictionary(o => o.Key, o => o.Value);
 
-            var j = JsonConvert.SerializeObject(a, new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                NullValueHandling = NullValueHandling.Ignore,
-                DefaultValueHandling = DefaultValueHandling.Ignore
-            });
-
-            var m = vkapi.GetObjectsAsync().Result;
-
-            var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            var filePath = Path.Combine(desktopPath, $"json-{DateTime.Now.ToString("ddMMyyHHmmss")}.json");
-            File.WriteAllText(filePath, j);
+            var serializedSchema = SerializeObject(a);
+            WriteToFile(serializedSchema, "objects");
         }
 
         public static void CheckResonses()
         {
             var testSet = new string[]
                 {
-                "ok_response"
+                "ok_response",
+                "account_changePassword_response",
+                "account_getActiveOffers_response",
+                "account_getAppPermissions_response",
+                "account_getBanned_response",
+                "account_saveProfileInfo_response",
+                "ads_createCampaigns_response",
+                "auth_confirm_response",
+                "board_getTopics_response",
+                "board_getTopics_extended_response",
+                "database_getRegions_response",
+                "friends_delete_response",
+                "friends_addList_response",
+                "friends_delete_response",
+                "newsfeed_getSuggestedSources_response",
+                "messages_delete_response",
+                "users_getSubscriptions_extended_response"
                 };
 
             var vkapi = new VKApiSchema();
             var a = vkapi.GetResponsesAsync().Result;
-            //var n = a.Objects.Where(o => o.Value.PatternProperties != VKApiSchemaParser.Models.ApiObjectType.Object).ToArray();
-            // У всех объектов в ответах есть только одно свойство - response,
-            // поэтому имеет смысл вместо парсинга объекта полностью использовать объект из свойства response.
-            //a.Objects = a.Objects.Where(o => testSet.Contains(o.Key)).ToDictionary(o => o.Key, o => o.Value);
+            a.Objects = a.Objects.Where(o => testSet.Contains(o.Key)).ToDictionary(o => o.Key, o => o.Value);
 
-            var j = JsonConvert.SerializeObject(a, new JsonSerializerSettings
+            var serializedSchema = SerializeObject(a);
+            WriteToFile(serializedSchema, "responses");
+        }
+
+        private static string SerializeObject(IApiSchema schema)
+        {
+            return JsonConvert.SerializeObject(schema, new JsonSerializerSettings
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 NullValueHandling = NullValueHandling.Ignore,
                 DefaultValueHandling = DefaultValueHandling.Ignore
             });
+        }
 
-            var m = vkapi.GetResponsesAsync().Result;
-
+        private static void WriteToFile(string data, string prefix)
+        {
             var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            var filePath = Path.Combine(desktopPath, $"json-{DateTime.Now.ToString("ddMMyyHHmmss")}.json");
-            File.WriteAllText(filePath, j);
+            var filePath = Path.Combine(desktopPath, $"{prefix}-{DateTime.Now.ToString("HHmmss")}.json");
+            File.WriteAllText(filePath, data);
         }
     }
 }
