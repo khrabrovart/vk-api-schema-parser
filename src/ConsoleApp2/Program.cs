@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Linq;
 using VKApiSchemaParser;
-using VKApiSchemaParser.Models;
+using VKApiSchemaParser.Models.Schemas;
 
 namespace ConsoleApp2
 {
@@ -83,7 +83,7 @@ namespace ConsoleApp2
 
             var vkapi = new VKApiSchema();
             var a = vkapi.GetResponsesAsync().Result;
-            a.Objects = a.Objects.Where(o => testSet.Contains(o.Key)).ToDictionary(o => o.Key, o => o.Value);
+            a.Responses = a.Responses.Where(o => testSet.Contains(o.Key)).ToDictionary(o => o.Key, o => o.Value);
 
             var serializedSchema = SerializeObject(a);
             WriteToFile(serializedSchema, "responses");

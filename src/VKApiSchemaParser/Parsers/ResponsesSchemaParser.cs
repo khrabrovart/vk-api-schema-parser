@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VKApiSchemaParser.Extensions;
 using VKApiSchemaParser.Models;
+using VKApiSchemaParser.Models.Schemas;
 
 namespace VKApiSchemaParser.Parsers
 {
@@ -37,7 +38,7 @@ namespace VKApiSchemaParser.Parsers
             {
                 SchemaVersion = schema.SchemaVersion,
                 Title = schema.Title,
-                Objects = _apiResponses.Values
+                Responses = _apiResponses.Values
                     .OrderBy(obj => obj.Name)
                     .ToDictionary(obj => obj.OriginalName, obj => obj)
             };

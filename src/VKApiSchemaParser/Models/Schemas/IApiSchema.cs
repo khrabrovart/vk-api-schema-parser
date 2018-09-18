@@ -1,4 +1,4 @@
-﻿namespace VKApiSchemaParser.Models
+﻿namespace VKApiSchemaParser.Models.Schemas
 {
     public interface IApiSchema
     {

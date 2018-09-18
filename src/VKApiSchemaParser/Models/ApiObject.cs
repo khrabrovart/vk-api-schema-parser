@@ -84,9 +84,24 @@ namespace VKApiSchemaParser.Models
         public bool AdditionalProperties { get; set; }
 
         /// <summary>
-        /// Gets or sets minimum property's value.
+        /// Gets or sets minimum value.
         /// </summary>
         public int? Minimum { get; set; }
+
+        /// <summary>
+        /// Gets or sets maximum value.
+        /// </summary>
+        public int? Maximum { get; set; }
+
+        /// <summary>
+        /// Gets or sets default value.
+        /// </summary>
+        public int? Default { get; set; }
+
+        /// <summary>
+        /// Gets or sets maximum number of items in array.
+        /// </summary>
+        public int? MaxItems { get; set; }
 
         /// <summary>
         /// Gets or sets items type if object's type is array.

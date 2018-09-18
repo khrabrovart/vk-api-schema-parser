@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using VKApiSchemaParser.Models;
+using VKApiSchemaParser.Models.Schemas;
 using VKApiSchemaParser.Parsers;
 
 namespace VKApiSchemaParser

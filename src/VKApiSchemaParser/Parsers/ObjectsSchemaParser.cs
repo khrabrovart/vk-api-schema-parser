@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using VKApiSchemaParser.Extensions;
 using VKApiSchemaParser.Models;
+using VKApiSchemaParser.Models.Schemas;
 
 namespace VKApiSchemaParser.Parsers
 {

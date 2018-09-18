@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace VKApiSchemaParser.Models
+namespace VKApiSchemaParser.Models.Schemas
 {
     public class ApiObjectsSchema : IApiSchema
     {
