@@ -28,6 +28,7 @@ namespace VKApiSchemaParser.Parsers
 
             foreach (var definition in _definitions)
             {
+                // Нужна ли здесь проверка вообще?
                 if (!_apiResponses.ContainsKey(definition.Path))
                 {
                     ParseObject(definition.First, ObjectParsingOptions.NamedAndRegistered);

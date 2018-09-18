@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace VKApiSchemaParser.Models
 {
-    public class ApiObject
+    public class ApiMethodParameter
     {
         /// <summary>
         /// Gets or sets beautified object's name.
@@ -106,8 +108,8 @@ namespace VKApiSchemaParser.Models
         /// <summary>
         /// Gets or sets items type if object's type is array.
         /// </summary>
-        public ApiObject Items { get; set; } 
-        
+        public ApiObject Items { get; set; }
+
         /// <summary>
         /// Gets or sets flag whether (object) property is required or not.
         /// </summary>

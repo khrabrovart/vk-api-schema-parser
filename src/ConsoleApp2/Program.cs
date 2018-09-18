@@ -11,7 +11,7 @@ namespace ConsoleApp2
     {
         public static void Main(string[] args)
         {
-            CheckResonses();
+            CheckMethods();
         }
 
         public static void CheckObjects()
@@ -87,6 +87,37 @@ namespace ConsoleApp2
 
             var serializedSchema = SerializeObject(a);
             WriteToFile(serializedSchema, "responses");
+        }
+
+        public static void CheckMethods()
+        {
+            var testSet = new string[]
+                {
+                "ok_response",
+                "account_changePassword_response",
+                "account_getActiveOffers_response",
+                "account_getAppPermissions_response",
+                "account_getBanned_response",
+                "account_saveProfileInfo_response",
+                "ads_createCampaigns_response",
+                "auth_confirm_response",
+                "board_getTopics_response",
+                "board_getTopics_extended_response",
+                "database_getRegions_response",
+                "friends_delete_response",
+                "friends_addList_response",
+                "friends_delete_response",
+                "newsfeed_getSuggestedSources_response",
+                "messages_delete_response",
+                "users_getSubscriptions_extended_response"
+                };
+
+            var vkapi = new VKApiSchema();
+            var a = vkapi.GetMethodsAsync().Result;
+            //a.Responses = a.Responses.Where(o => testSet.Contains(o.Key)).ToDictionary(o => o.Key, o => o.Value);
+
+            var serializedSchema = SerializeObject(a);
+            WriteToFile(serializedSchema, "methods");
         }
 
         private static string SerializeObject(IApiSchema schema)

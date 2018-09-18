@@ -9,7 +9,7 @@ namespace VKApiSchemaParser.Models
         public string OriginalName { get; set; }
         public string Description { get; set; }
         public IEnumerable<ApiAccessTokenType> AccessTokenTypes { get; set; }
-        public IEnumerable<ApiObject> Parameters { get; set; }
+        public IEnumerable<ApiMethodParameter> Parameters { get; set; }
         public IEnumerable<ApiObject> Responses { get; set; }
         public IEnumerable<ApiError> Errors { get; set; }
     }
