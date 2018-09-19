@@ -89,32 +89,17 @@ namespace ConsoleApp2
             WriteToFile(serializedSchema, "responses");
         }
 
+        // Нужны ли OriginalName и OriginalTypeName? Как минимум OriginalTypeName переименовать в OriginalType
         public static void CheckMethods()
         {
             var testSet = new string[]
                 {
-                "ok_response",
-                "account_changePassword_response",
-                "account_getActiveOffers_response",
-                "account_getAppPermissions_response",
-                "account_getBanned_response",
-                "account_saveProfileInfo_response",
-                "ads_createCampaigns_response",
-                "auth_confirm_response",
-                "board_getTopics_response",
-                "board_getTopics_extended_response",
-                "database_getRegions_response",
-                "friends_delete_response",
-                "friends_addList_response",
-                "friends_delete_response",
-                "newsfeed_getSuggestedSources_response",
-                "messages_delete_response",
-                "users_getSubscriptions_extended_response"
+                "users.get",
                 };
 
             var vkapi = new VKApiSchema();
             var a = vkapi.GetMethodsAsync().Result;
-            //a.Responses = a.Responses.Where(o => testSet.Contains(o.Key)).ToDictionary(o => o.Key, o => o.Value);
+            a.Methods = a.Methods.Where(o => testSet.Contains(o.OriginalName)).ToList();
 
             var serializedSchema = SerializeObject(a);
             WriteToFile(serializedSchema, "methods");

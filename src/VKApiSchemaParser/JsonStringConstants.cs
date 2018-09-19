@@ -29,6 +29,8 @@
         public const string MaxItems = "maxItems";
         public const string MinProperties = "minProperties";
         public const string MaxProperties = "maxProperties";
+        public const string MinLength = "minLength";
+        public const string MaxLength = "maxLength";
 
         #region Types
 

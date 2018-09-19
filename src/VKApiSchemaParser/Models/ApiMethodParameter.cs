@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace VKApiSchemaParser.Models
 {
@@ -32,35 +30,6 @@ namespace VKApiSchemaParser.Models
         public string Description { get; set; }
 
         /// <summary>
-        /// Gets or sets object's reference object.
-        /// Typically it's the type of object.
-        /// </summary>
-        public ApiObject Reference { get; set; }
-
-        /// <summary>
-        /// Gets or sets object's properties list.
-        /// </summary>
-        public IEnumerable<ApiObject> Properties { get; set; }
-
-        /// <summary>
-        /// Gets or sets object's pattern properties list.
-        /// Pattern properties are properties whose names are represented as a regular expressions.
-        /// </summary>
-        public IEnumerable<ApiObject> PatternProperties { get; set; }
-
-        /// <summary>
-        /// Gets or sets object's allOf list.
-        /// Typically it has one reference as parent object and
-        /// one object with additional properties.
-        /// </summary>
-        public IEnumerable<ApiObject> AllOf { get; set; }
-
-        /// <summary>
-        /// Gets or sets object's oneOf list.
-        /// </summary>
-        public IEnumerable<ApiObject> OneOf { get; set; }
-
-        /// <summary>
         /// Gets or sets object's enum values.
         /// </summary>
         public IEnumerable<string> Enum { get; set; }
@@ -71,19 +40,14 @@ namespace VKApiSchemaParser.Models
         public IEnumerable<string> EnumNames { get; set; }
 
         /// <summary>
-        /// Gets or sets object's minimum number of properties.
+        /// Gets or sets parameter's minimum length.
         /// </summary>
-        public int? MinProperties { get; set; }
+        public int? MinLength { get; set; }
 
         /// <summary>
-        /// Gets or sets object's maximum number of properties.
+        /// Gets or sets parameter's maximum length.
         /// </summary>
-        public int? MaxProperties { get; set; }
-
-        /// <summary>
-        /// Gets or sets object's additional properties value.
-        /// </summary>
-        public bool AdditionalProperties { get; set; }
+        public int? MaxLength { get; set; }
 
         /// <summary>
         /// Gets or sets minimum value.
