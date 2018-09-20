@@ -2,6 +2,7 @@
 
 VK (VKontakte) API JSON schema parser for .NET 
 
+## Description
 Converts [VK API Schema](https://github.com/VKCOM/vk-api-schema) to C# objects.
 
 Works with:
@@ -10,3 +11,11 @@ Works with:
 * [Methods](https://github.com/VKCOM/vk-api-schema/blob/master/methods.json)
 
 Official VK API documentation about its JSON schema can be found [here](https://vk.com/dev/json_schema).
+
+## Usage
+```csharp
+var vkApiSchema = new VKApiSchema();
+var vkApiObjects = await vkApiSchema.GetObjectsAsync();
+var vkApiResponses = await vkApiSchema.GetResponsesAsync();
+var vkApiMethods = await vkApiSchema.GetMethodsAsync();
+```
