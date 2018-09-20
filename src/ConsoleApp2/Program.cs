@@ -11,6 +11,9 @@ namespace ConsoleApp2
     {
         public static void Main(string[] args)
         {
+            // Создать NuGet пакет
+            CheckObjects();
+            CheckResonses();
             CheckMethods();
         }
 
@@ -89,12 +92,18 @@ namespace ConsoleApp2
             WriteToFile(serializedSchema, "responses");
         }
 
-        // Нужны ли OriginalName и OriginalTypeName? Как минимум OriginalTypeName переименовать в OriginalType
         public static void CheckMethods()
         {
             var testSet = new string[]
                 {
                 "users.get",
+                "users.getSubscriptions",
+                "users.getFollowers",
+                "auth.checkPhone",
+                "users.search",
+                "friends.getByPhones",
+                "friends.areFriends",
+                "friends.getAvailableForCall"
                 };
 
             var vkapi = new VKApiSchema();

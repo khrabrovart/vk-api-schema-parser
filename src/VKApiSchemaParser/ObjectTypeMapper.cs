@@ -18,7 +18,9 @@ namespace VKApiSchemaParser
 
         public static ApiObjectType Map(string typeName)
         {
-            return typeName == null || !TypesMapping.TryGetValue(typeName, out var objectType) ? ApiObjectType.Undefined : objectType; 
+            return typeName == null || !TypesMapping.TryGetValue(typeName, out var objectType) 
+                ? ApiObjectType.Undefined 
+                : objectType; 
         }
     }
 }

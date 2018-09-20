@@ -20,11 +20,6 @@ namespace VKApiSchemaParser.Models
         public ApiObjectType Type { get; set; }
 
         /// <summary>
-        /// Gets or sets original object's type.
-        /// </summary>
-        public string OriginalTypeName { get; set; }
-
-        /// <summary>
         /// Gets or sets object's description.
         /// </summary>
         public string Description { get; set; }
@@ -87,21 +82,6 @@ namespace VKApiSchemaParser.Models
         /// Gets or sets minimum value.
         /// </summary>
         public int? Minimum { get; set; }
-
-        /// <summary>
-        /// Gets or sets maximum value.
-        /// </summary>
-        public int? Maximum { get; set; }
-
-        /// <summary>
-        /// Gets or sets default value.
-        /// </summary>
-        public string Default { get; set; }
-
-        /// <summary>
-        /// Gets or sets maximum number of items in array.
-        /// </summary>
-        public int? MaxItems { get; set; }
 
         /// <summary>
         /// Gets or sets items type if object's type is array.

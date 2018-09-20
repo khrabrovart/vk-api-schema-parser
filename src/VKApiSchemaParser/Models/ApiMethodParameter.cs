@@ -20,11 +20,6 @@ namespace VKApiSchemaParser.Models
         public ApiObjectType Type { get; set; }
 
         /// <summary>
-        /// Gets or sets original object's type.
-        /// </summary>
-        public string OriginalTypeName { get; set; }
-
-        /// <summary>
         /// Gets or sets object's description.
         /// </summary>
         public string Description { get; set; }

@@ -12,7 +12,6 @@ namespace VKApiSchemaParser.Parsers
 {
     internal class MethodsSchemaParser : BaseSchemaParser<ApiMethodsSchema>
     {
-        private IDictionary<string, ApiObject> _apiMethods = new Dictionary<string, ApiObject>();
         private ApiResponsesSchema _responsesSchema;
 
         public MethodsSchemaParser(ApiResponsesSchema responsesSchema)
@@ -20,7 +19,7 @@ namespace VKApiSchemaParser.Parsers
             _responsesSchema = responsesSchema;
         }
 
-        protected override string SchemaDownloadUrl => SchemaUrl.Methods;
+        protected override string SchemaUrl => SchemaUrls.Methods;
 
         protected override ApiMethodsSchema Parse(JSchema schema)
         {
@@ -40,19 +39,19 @@ namespace VKApiSchemaParser.Parsers
 
             if (string.IsNullOrWhiteSpace(referencePath))
             {
-                throw new Exception($"Invalid reference \"{referencePath}\"");
+                throw new ArgumentException($"Invalid reference \"{referencePath}\"");
             }
 
-            // Object database_street is missing, issue https://github.com/VKCOM/vk-api-schema/issues/44
-            return _responsesSchema.Responses.ContainsKey(referencePath) ?
-                _responsesSchema.Responses[referencePath] : null; // Replace NULL with Exception later
+            return _responsesSchema.Responses.ContainsKey(referencePath) 
+                ? _responsesSchema.Responses[referencePath] 
+                : throw new ArgumentException($"Reference \"{referencePath}\" not found", nameof(referencePath));
         }
 
         protected override ApiObject ParseObject(JToken token, ObjectParsingOptions options)
         {
             if (token == null)
             {
-                return null; // Throw exception later.
+                throw new ArgumentNullException(nameof(token));
             }
 
             var obj = InitializeObject(token, options);
@@ -69,7 +68,6 @@ namespace VKApiSchemaParser.Parsers
         {
             var obj = new ApiObject();
 
-            // All registered objects have names. Objects without names cannot be registered.
             if (options >= ObjectParsingOptions.Named)
             {
                 var name = token.Path.Split('.').LastOrDefault();
@@ -81,12 +79,6 @@ namespace VKApiSchemaParser.Parsers
 
                 obj.Name = name?.Beautify();
                 obj.OriginalName = name;
-
-                // Registration is only needed for top-level objects.
-                if (options == ObjectParsingOptions.NamedAndRegistered)
-                {
-                    _apiMethods.Add(name, obj);
-                }
             }
 
             return obj;
@@ -116,8 +108,11 @@ namespace VKApiSchemaParser.Parsers
                 method.Errors = JsonConvert.DeserializeObject<IEnumerable<ApiError>>(errorsString);
             }
 
-            method.Parameters = token.SelectPropertyOrDefault(JsonStringConstants.Parameters, t => t.Select(ParseMethodParameter));
-            method.Responses = token.SelectPropertyOrDefault(JsonStringConstants.Responses, t => t.Select(tc => ParseObject(tc.First, ObjectParsingOptions.Named)));
+            method.Parameters = token
+                .SelectPropertyOrDefault(JsonStringConstants.Parameters, t => t.Select(ParseMethodParameter));
+
+            method.Responses = token
+                .SelectPropertyOrDefault(JsonStringConstants.Responses, t => t.Select(tc => ParseObject(tc.First, ObjectParsingOptions.Named)));
 
             return method;
         }
@@ -127,14 +122,15 @@ namespace VKApiSchemaParser.Parsers
             var parameter = new ApiMethodParameter();
 
             var name = token.GetPropertyAsString(JsonStringConstants.Name);
+
             parameter.Name = name.Beautify();
             parameter.OriginalName = name;
 
             var type = token.GetPropertyAsArray(JsonStringConstants.Type)?.Count() > 1 ?
                 JsonStringConstants.Multiple :
                 token.GetPropertyAsString(JsonStringConstants.Type);
+
             parameter.Type = ObjectTypeMapper.Map(type);
-            parameter.OriginalTypeName = type;
 
             parameter.Description = token.GetPropertyAsString(JsonStringConstants.Description);
             parameter.Enum = token.GetPropertyAsArray(JsonStringConstants.Enum);

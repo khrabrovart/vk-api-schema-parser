@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using VKApiSchemaParser.Extensions;
 using VKApiSchemaParser.Models;
@@ -11,8 +10,6 @@ namespace VKApiSchemaParser.Parsers
 {
     internal class ResponsesSchemaParser : BaseSchemaParser<ApiResponsesSchema>
     {
-        private JToken _definitions;
-        private IDictionary<string, ApiObject> _apiResponses = new Dictionary<string, ApiObject>();
         private ApiObjectsSchema _objectsSchema;
 
         public ResponsesSchemaParser(ApiObjectsSchema objectsSchema)
@@ -20,26 +17,18 @@ namespace VKApiSchemaParser.Parsers
             _objectsSchema = objectsSchema;
         }
 
-        protected override string SchemaDownloadUrl => SchemaUrl.Responses;
+        protected override string SchemaUrl => SchemaUrls.Responses;
 
         protected override ApiResponsesSchema Parse(JSchema schema)
         {
-            _definitions = schema.ExtensionData[JsonStringConstants.Definitions];
-
-            foreach (var definition in _definitions)
-            {
-                // Нужна ли здесь проверка вообще?
-                if (!_apiResponses.ContainsKey(definition.Path))
-                {
-                    ParseObject(definition.First, ObjectParsingOptions.NamedAndRegistered);
-                }
-            }
+            var definitions = schema.ExtensionData[JsonStringConstants.Definitions];
 
             return new ApiResponsesSchema
             {
                 SchemaVersion = schema.SchemaVersion,
                 Title = schema.Title,
-                Responses = _apiResponses.Values
+                Responses = definitions
+                    .Select(d => ParseObject(d.First, ObjectParsingOptions.NamedAndRegistered))
                     .OrderBy(obj => obj.Name)
                     .ToDictionary(obj => obj.OriginalName, obj => obj)
             };
@@ -69,7 +58,7 @@ namespace VKApiSchemaParser.Parsers
             var obj = InitializeObject(token, options);
 
             // Replacing actual response object with its 'response' property.
-            // Only for top-level objects that are registered.
+            // Only for top-level objects.
             if (options == ObjectParsingOptions.NamedAndRegistered)
             {
                 token = token[JsonStringConstants.Properties]["response"];
@@ -99,12 +88,6 @@ namespace VKApiSchemaParser.Parsers
 
                 obj.Name = name?.Beautify();
                 obj.OriginalName = name;
-
-                // Registration is only needed for top-level objects.
-                if (options == ObjectParsingOptions.NamedAndRegistered)
-                {
-                    _apiResponses.Add(name, obj);
-                }
             }
 
             return obj;

@@ -16,11 +16,11 @@ namespace VKApiSchemaParser.Parsers
             NamedAndRegistered
         }
 
-        protected abstract string SchemaDownloadUrl { get; }
+        protected abstract string SchemaUrl { get; }
 
         public async Task<T> ParseAsync()
         {
-            var schema = await InitializeAsync(SchemaDownloadUrl).ConfigureAwait(false);
+            var schema = await InitializeAsync(SchemaUrl).ConfigureAwait(false);
             return Parse(schema);
         } 
 
@@ -51,8 +51,8 @@ namespace VKApiSchemaParser.Parsers
             var type = token.GetPropertyAsArray(JsonStringConstants.Type)?.Count() > 1 ?
                 JsonStringConstants.Multiple :
                 token.GetPropertyAsString(JsonStringConstants.Type);
+
             obj.Type = ObjectTypeMapper.Map(type);
-            obj.OriginalTypeName = type;
         }
 
         protected void FillProperties(ApiObject obj, JToken token)
@@ -73,7 +73,6 @@ namespace VKApiSchemaParser.Parsers
                     return newObject;
                 }));
 
-            // Проверить правильность заполнения
             obj.PatternProperties = token.SelectPropertyOrDefault(JsonStringConstants.PatternProperties, t => t
                 .Where(p => p.First != null)
                 .Select(p =>
@@ -103,7 +102,6 @@ namespace VKApiSchemaParser.Parsers
             }
         }
 
-        // Проверить, что все свойства класса заполняются в методах Fill.
         protected void FillOther(ApiObject obj, JToken token)
         {
             obj.Description = token.GetPropertyAsString(JsonStringConstants.Description);

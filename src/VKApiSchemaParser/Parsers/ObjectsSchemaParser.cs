@@ -14,7 +14,7 @@ namespace VKApiSchemaParser.Parsers
         private JToken _definitions;
         private Dictionary<string, ApiObject> _apiObjects = new Dictionary<string, ApiObject>();
 
-        protected override string SchemaDownloadUrl => SchemaUrl.Objects;
+        protected override string SchemaUrl => SchemaUrls.Objects;
 
         protected override ApiObjectsSchema Parse(JSchema schema)
         {
@@ -59,6 +59,18 @@ namespace VKApiSchemaParser.Parsers
                 return null; // Throw exception later.
             }
 
+            var obj = InitializeObject(token, options);
+
+            FillType(obj, token);
+            FillProperties(obj, token);
+            FillReference(obj, token);
+            FillOther(obj, token);
+
+            return obj;
+        }
+
+        private ApiObject InitializeObject(JToken token, ObjectParsingOptions options)
+        {
             var obj = new ApiObject();
 
             // All registered objects have names. Objects without names cannot be registered.
@@ -80,11 +92,6 @@ namespace VKApiSchemaParser.Parsers
                     _apiObjects.Add(name, obj);
                 }
             }
-
-            FillType(obj, token);
-            FillProperties(obj, token);
-            FillReference(obj, token);
-            FillOther(obj, token);
 
             return obj;
         }
