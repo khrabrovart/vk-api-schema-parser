@@ -19,3 +19,5 @@ var vkApiObjects = await vkApiSchema.GetObjectsAsync();
 var vkApiResponses = await vkApiSchema.GetResponsesAsync();
 var vkApiMethods = await vkApiSchema.GetMethodsAsync();
 ```
+
+Methods depends on responses, and responses depends on objects. So when method _GetMethodsAsync_ is called, responses and objects get loaded too.
