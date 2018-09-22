@@ -1,7 +1,35 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup Label="Configuration">
+    <DocumentationFile>bin\Release\VKApiSchemaParser.xml</DocumentationFile>
+    <OutputPath />
+  </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.6;net46</TargetFrameworks>
+    <TargetFrameworks>net46;netstandard1.6;netstandard2.0</TargetFrameworks>
+    <PackageId>VKApiSchemaParser</PackageId>
+    <Title>VK API Schema Parser</Title>
+    <Summary>Converts VK API Schema to C# objects.</Summary>
+    <Authors>Arthur Khrabrov</Authors>
+    <Owners>Arthur Khrabrov</Owners>
+    <PackageIconUrl>https://s3.eu-central-1.amazonaws.com/vkcmgr.net/images/citrina1.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/khrabrovart/vk-api-schema-parser</PackageProjectUrl>
+    <Description>Converts VK API Schema to C# objects.</Description>
+    <PackageReleaseNotes>
+      Docs: https://github.com/khrabrovart/vk-api-schema-parser
+    </PackageReleaseNotes>
+    <Copyright>Copyright 2018 (C) Arthur Khrabrov. All rights reserved.</Copyright>
+    <PackageTags>vk api json schema vkapi parser</PackageTags>
+    <PackageLicenseUrl>https://github.com/khrabrovart/vk-api-schema-parser/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/khrabrovart/vk-api-schema-parser</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <IncludeSource>True</IncludeSource>
+    <IncludeSymbols>True</IncludeSymbols>
+    
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <FileVersion>1.0.0</FileVersion>
+    <PackageVersion>1.0.0-beta</PackageVersion>
+    <Version>1.0.0-beta</Version>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net46'">

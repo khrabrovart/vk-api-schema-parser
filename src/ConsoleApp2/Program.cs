@@ -2,16 +2,14 @@
 using System;
 using System.IO;
 using System.Linq;
-using VKApiSchemaParser;
 using VKApiSchemaParser.Models.Schemas;
 
-namespace ConsoleApp2
+namespace VKApiSchemaParser.Tests
 {
     class Program
     {
         public static void Main(string[] args)
         {
-            // Создать NuGet пакет
             CheckObjects();
             CheckResonses();
             CheckMethods();

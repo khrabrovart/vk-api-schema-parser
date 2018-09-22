@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VKApiSchemaParser", "VKApiSchemaParser\VKApiSchemaParser.csproj", "{AB531948-5483-46D1-87F6-C7555AE14794}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp2", "ConsoleApp2\ConsoleApp2.csproj", "{8BB1D023-5FB7-4DEA-83C0-8D7AF24A387C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VKApiSchemaParser.Tests", "ConsoleApp2\VKApiSchemaParser.Tests.csproj", "{8BB1D023-5FB7-4DEA-83C0-8D7AF24A387C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
