@@ -12,6 +12,14 @@ Works with:
 
 Official VK API documentation about its JSON schema can be found [here](https://vk.com/dev/json_schema).
 
+## NuGet Package
+Install VK API Schema Parser package:
+```
+Install-Package VKApiSchemaParser
+```
+
+[NuGet package link](https://www.nuget.org/packages/VKApiSchemaParser)
+
 ## Usage
 ```csharp
 var vkApiSchema = new VKApiSchema();
