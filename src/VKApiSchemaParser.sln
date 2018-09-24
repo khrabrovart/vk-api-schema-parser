@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VKApiSchemaParser", "VKApiSchemaParser\VKApiSchemaParser.csproj", "{AB531948-5483-46D1-87F6-C7555AE14794}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VKApiSchemaParser.Tests", "ConsoleApp2\VKApiSchemaParser.Tests.csproj", "{8BB1D023-5FB7-4DEA-83C0-8D7AF24A387C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VKApiSchemaParser.Tests", "VKApiSchemaParser.Tests\VKApiSchemaParser.Tests.csproj", "{2F975110-6BF3-48CC-8ED5-CD08ED016982}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{AB531948-5483-46D1-87F6-C7555AE14794}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB531948-5483-46D1-87F6-C7555AE14794}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB531948-5483-46D1-87F6-C7555AE14794}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8BB1D023-5FB7-4DEA-83C0-8D7AF24A387C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8BB1D023-5FB7-4DEA-83C0-8D7AF24A387C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8BB1D023-5FB7-4DEA-83C0-8D7AF24A387C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8BB1D023-5FB7-4DEA-83C0-8D7AF24A387C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F975110-6BF3-48CC-8ED5-CD08ED016982}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F975110-6BF3-48CC-8ED5-CD08ED016982}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F975110-6BF3-48CC-8ED5-CD08ED016982}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F975110-6BF3-48CC-8ED5-CD08ED016982}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
