@@ -6,7 +6,9 @@ using VKApiSchemaParser.Models.Schemas;
 
 namespace VKApiSchemaParser.Tests
 {
-    class Program
+    // TODO: Убрать словари для Objects и Responses, либо сделать свойства, которое отдельно возвращают
+    // чисто список или словарь
+    public class Program
     {
         public static void Main(string[] args)
         {
