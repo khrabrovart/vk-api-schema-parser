@@ -27,7 +27,7 @@ namespace VKApiSchemaParser.Parsers
             {
                 SchemaVersion = schema.SchemaVersion,
                 Title = schema.Title,
-                Responses = definitions
+                ResponsesDictionary = definitions
                     .Select(d => ParseObject(d.First, ObjectParsingOptions.NamedAndRegistered))
                     .OrderBy(obj => obj.Name)
                     .ToDictionary(obj => obj.OriginalName, obj => obj)
@@ -44,8 +44,8 @@ namespace VKApiSchemaParser.Parsers
             }
 
             // Object database_street is missing, issue https://github.com/VKCOM/vk-api-schema/issues/44
-            return _objectsSchema.Objects.ContainsKey(referencePath) ?
-                _objectsSchema.Objects[referencePath] : null; // Replace NULL with Exception later
+            return _objectsSchema.ObjectsDictionary.ContainsKey(referencePath) ?
+                _objectsSchema.ObjectsDictionary[referencePath] : null; // Replace NULL with Exception later
         }
 
         protected override ApiObject ParseObject(JToken token, ObjectParsingOptions options)

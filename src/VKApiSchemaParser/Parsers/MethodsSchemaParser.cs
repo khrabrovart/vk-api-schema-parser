@@ -42,8 +42,8 @@ namespace VKApiSchemaParser.Parsers
                 throw new ArgumentException($"Invalid reference \"{referencePath}\"");
             }
 
-            return _responsesSchema.Responses.ContainsKey(referencePath) 
-                ? _responsesSchema.Responses[referencePath] 
+            return _responsesSchema.ResponsesDictionary.ContainsKey(referencePath) 
+                ? _responsesSchema.ResponsesDictionary[referencePath] 
                 : throw new ArgumentException($"Reference \"{referencePath}\" not found", nameof(referencePath));
         }
 

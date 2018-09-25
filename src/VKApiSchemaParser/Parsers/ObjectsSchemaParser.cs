@@ -32,7 +32,7 @@ namespace VKApiSchemaParser.Parsers
             {
                 SchemaVersion = schema.SchemaVersion,
                 Title = schema.Title,
-                Objects = _apiObjects.Values
+                ObjectsDictionary = _apiObjects.Values
                     .OrderBy(obj => obj.Name)
                     .ToDictionary(obj => obj.OriginalName, obj => obj)
             };

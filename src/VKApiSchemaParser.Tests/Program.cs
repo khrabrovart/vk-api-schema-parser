@@ -6,8 +6,6 @@ using VKApiSchemaParser.Models.Schemas;
 
 namespace VKApiSchemaParser.Tests
 {
-    // TODO: Убрать словари для Objects и Responses, либо сделать свойства, которое отдельно возвращают
-    // чисто список или словарь
     public class Program
     {
         public static void Main(string[] args)
@@ -55,7 +53,7 @@ namespace VKApiSchemaParser.Tests
 
             var vkapi = new VKApiSchema();
             var a = vkapi.GetObjectsAsync().Result;
-            a.Objects = a.Objects.Where(o => testSet.Contains(o.Key)).ToDictionary(o => o.Key, o => o.Value);
+            a.ObjectsDictionary = a.ObjectsDictionary.Where(o => testSet.Contains(o.Key)).ToDictionary(o => o.Key, o => o.Value);
 
             var serializedSchema = SerializeObject(a);
             WriteToFile(serializedSchema, "objects");
@@ -86,7 +84,7 @@ namespace VKApiSchemaParser.Tests
 
             var vkapi = new VKApiSchema();
             var a = vkapi.GetResponsesAsync().Result;
-            a.Responses = a.Responses.Where(o => testSet.Contains(o.Key)).ToDictionary(o => o.Key, o => o.Value);
+            a.ResponsesDictionary = a.ResponsesDictionary.Where(o => testSet.Contains(o.Key)).ToDictionary(o => o.Key, o => o.Value);
 
             var serializedSchema = SerializeObject(a);
             WriteToFile(serializedSchema, "responses");
