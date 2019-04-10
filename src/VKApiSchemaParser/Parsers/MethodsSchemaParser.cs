@@ -12,7 +12,7 @@ namespace VKApiSchemaParser.Parsers
 {
     internal class MethodsSchemaParser : BaseSchemaParser<ApiMethodsSchema>
     {
-        private ApiResponsesSchema _responsesSchema;
+        private readonly ApiResponsesSchema _responsesSchema;
 
         public MethodsSchemaParser(ApiResponsesSchema responsesSchema)
         {

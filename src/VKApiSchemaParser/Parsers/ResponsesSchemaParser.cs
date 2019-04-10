@@ -10,7 +10,7 @@ namespace VKApiSchemaParser.Parsers
 {
     internal class ResponsesSchemaParser : BaseSchemaParser<ApiResponsesSchema>
     {
-        private ApiObjectsSchema _objectsSchema;
+        private readonly ApiObjectsSchema _objectsSchema;
 
         public ResponsesSchemaParser(ApiObjectsSchema objectsSchema)
         {
@@ -86,7 +86,7 @@ namespace VKApiSchemaParser.Parsers
                     throw new Exception($"Invalid name \"{name}\"");
                 }
 
-                obj.Name = name?.Beautify();
+                obj.Name = name.Beautify();
                 obj.OriginalName = name;
             }
 

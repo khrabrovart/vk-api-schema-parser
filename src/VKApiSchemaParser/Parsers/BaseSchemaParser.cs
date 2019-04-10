@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
@@ -31,7 +32,9 @@ namespace VKApiSchemaParser.Parsers
         }
 
         protected abstract T Parse(JSchema schema);
+
         protected abstract ApiObject ResolveReference(string referencePath);
+
         protected abstract ApiObject ParseObject(JToken token, ObjectParsingOptions options);
 
         protected ApiObject ParseNestedObject(JToken token)
@@ -57,35 +60,10 @@ namespace VKApiSchemaParser.Parsers
 
         protected void FillProperties(ApiObject obj, JToken token)
         {
-            var requiredProperties = token.GetPropertyAsArray(JsonStringConstants.Required);
+            var requiredProperties = token.GetPropertyAsArray(JsonStringConstants.Required).ToArray();
 
-            obj.Properties = token.SelectPropertyOrDefault(JsonStringConstants.Properties, t => t
-                .Where(p => p.First != null)
-                .Select(p =>
-                {
-                    var newObject = ParseObject(p.First, ObjectParsingOptions.Named);
-
-                    if (requiredProperties != null)
-                    {
-                        newObject.IsRequired = requiredProperties.Contains(newObject.OriginalName);
-                    }
-
-                    return newObject;
-                }));
-
-            obj.PatternProperties = token.SelectPropertyOrDefault(JsonStringConstants.PatternProperties, t => t
-                .Where(p => p.First != null)
-                .Select(p =>
-                {
-                    var newObject = ParseObject(p.First, ObjectParsingOptions.Named);
-
-                    if (requiredProperties != null)
-                    {
-                        newObject.IsRequired = requiredProperties.Contains(newObject.OriginalName);
-                    }
-
-                    return newObject;
-                }));
+            obj.Properties = GetProperties(token, JsonStringConstants.Properties, requiredProperties);
+            obj.PatternProperties = GetProperties(token, JsonStringConstants.PatternProperties, requiredProperties);
 
             obj.MinProperties = token.GetPropertyAsInteger(JsonStringConstants.MinProperties);
             obj.MaxProperties = token.GetPropertyAsInteger(JsonStringConstants.MaxProperties);
@@ -111,6 +89,23 @@ namespace VKApiSchemaParser.Parsers
             obj.Items = token.SelectPropertyOrDefault(JsonStringConstants.Items, ParseNestedObject);
             obj.AllOf = token.SelectPropertyOrDefault(JsonStringConstants.AllOf, t => t.Select(ParseNestedObject));
             obj.OneOf = token.SelectPropertyOrDefault(JsonStringConstants.OneOf, t => t.Select(ParseNestedObject));
+        }
+
+        private IEnumerable<ApiObject> GetProperties(JToken token, string propertyName, IEnumerable<string> requiredProperties)
+        {
+            return token.SelectPropertyOrDefault(propertyName, t => t
+                .Where(p => p.First != null)
+                .Select(p =>
+                {
+                    var newObject = ParseObject(p.First, ObjectParsingOptions.Named);
+
+                    if (requiredProperties != null)
+                    {
+                        newObject.IsRequired = requiredProperties.Contains(newObject.OriginalName);
+                    }
+
+                    return newObject;
+                }));
         }
     }
 }

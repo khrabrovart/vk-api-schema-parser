@@ -2,6 +2,9 @@
 
 namespace VKApiSchemaParser.Models
 {
+    /// <summary>
+    /// Represents an Object in the API schema.
+    /// </summary>
     public class ApiObject
     {
         /// <summary>

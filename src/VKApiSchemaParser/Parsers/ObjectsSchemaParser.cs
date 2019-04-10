@@ -12,7 +12,7 @@ namespace VKApiSchemaParser.Parsers
     internal class ObjectsSchemaParser : BaseSchemaParser<ApiObjectsSchema>
     {
         private JToken _definitions;
-        private Dictionary<string, ApiObject> _apiObjects = new Dictionary<string, ApiObject>();
+        private readonly Dictionary<string, ApiObject> _apiObjects = new Dictionary<string, ApiObject>();
 
         protected override string SchemaUrl => SchemaUrls.Objects;
 
@@ -83,7 +83,7 @@ namespace VKApiSchemaParser.Parsers
                     throw new Exception($"Invalid name \"{name}\"");
                 }
 
-                obj.Name = name?.Beautify();
+                obj.Name = name.Beautify();
                 obj.OriginalName = name;
 
                 // Registration is only needed for top-level objects.
