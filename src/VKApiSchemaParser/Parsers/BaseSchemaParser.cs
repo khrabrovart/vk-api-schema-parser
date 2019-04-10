@@ -22,7 +22,7 @@ namespace VKApiSchemaParser.Parsers
         public async Task<T> ParseAsync()
         {
             var schema = await InitializeAsync(SchemaUrl).ConfigureAwait(false);
-            return Parse(schema);
+            return ParseSchema(schema);
         } 
 
         protected async Task<JSchema> InitializeAsync(string schemaUrl)
@@ -31,7 +31,7 @@ namespace VKApiSchemaParser.Parsers
             return JSchema.Parse(rawSchema);
         }
 
-        protected abstract T Parse(JSchema schema);
+        protected abstract T ParseSchema(JSchema schema);
 
         protected abstract ApiObject ResolveReference(string referencePath);
 

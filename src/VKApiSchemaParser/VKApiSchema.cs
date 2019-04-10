@@ -4,23 +4,21 @@ using VKApiSchemaParser.Parsers;
 
 namespace VKApiSchemaParser
 {
-    public class VKApiSchema
+    public static class VKApiSchema
     {
-        public Task<ApiObjectsSchema> GetObjectsAsync()
+        public static async Task<ApiSchema> ParseAsync()
         {
-            return new ObjectsSchemaParser().ParseAsync();
-        }
+            var objects = await new ObjectsSchemaParser().ParseAsync().ConfigureAwait(false);
+            var responses = await new ResponsesSchemaParser(objects).ParseAsync().ConfigureAwait(false);
+            var methodsSchema = await new MethodsSchemaParser(responses).ParseAsync().ConfigureAwait(false);
 
-        public async Task<ApiResponsesSchema> GetResponsesAsync()
-        {
-            var objectsSchema = await GetObjectsAsync().ConfigureAwait(false);
-            return await new ResponsesSchemaParser(objectsSchema).ParseAsync().ConfigureAwait(false);
-        }
-
-        public async Task<ApiMethodsSchema> GetMethodsAsync()
-        {
-            var responsesSchema = await GetResponsesAsync().ConfigureAwait(false);
-            return await new MethodsSchemaParser(responsesSchema).ParseAsync().ConfigureAwait(false);
+            return new ApiSchema
+            {
+                Objects = objects,
+                Responses = responses,
+                Methods = methodsSchema.Methods,
+                Errors = methodsSchema.Errors
+            };
         }
     }
 }

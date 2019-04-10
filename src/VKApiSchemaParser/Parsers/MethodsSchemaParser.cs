@@ -6,30 +6,29 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using VKApiSchemaParser.Extensions;
 using VKApiSchemaParser.Models;
-using VKApiSchemaParser.Models.Schemas;
 
 namespace VKApiSchemaParser.Parsers
 {
-    internal class MethodsSchemaParser : BaseSchemaParser<ApiMethodsSchema>
+    internal class MethodsSchemaParser : BaseSchemaParser<MethodsSchema>
     {
-        private readonly ApiResponsesSchema _responsesSchema;
+        private readonly IDictionary<string, ApiObject> _responses;
 
-        public MethodsSchemaParser(ApiResponsesSchema responsesSchema)
+        public MethodsSchemaParser(IDictionary<string, ApiObject> responses)
         {
-            _responsesSchema = responsesSchema;
+            _responses = responses;
         }
 
         protected override string SchemaUrl => SchemaUrls.Methods;
 
-        protected override ApiMethodsSchema Parse(JSchema schema)
+        protected override MethodsSchema ParseSchema(JSchema schema)
         {
             var errorDefinitions = schema.ExtensionData[JsonStringConstants.Errors];
             var methodDefinitions = schema.ExtensionData[JsonStringConstants.Methods];
 
-            return new ApiMethodsSchema
+            return new MethodsSchema
             {
-                Errors = JsonConvert.DeserializeObject<IEnumerable<ApiError>>(errorDefinitions.ToString()),
-                Methods = methodDefinitions.Select(ParseMethod)
+                Errors = JsonConvert.DeserializeObject<IEnumerable<ApiError>>(errorDefinitions.ToString()).ToDictionary(err => err.Name),
+                Methods = methodDefinitions.Select(ParseMethod).ToDictionary(method => method.OriginalName)
             };
         }
 
@@ -39,11 +38,11 @@ namespace VKApiSchemaParser.Parsers
 
             if (string.IsNullOrWhiteSpace(referencePath))
             {
-                throw new ArgumentException($"Invalid reference \"{referencePath}\"");
+                throw new ArgumentException($"Invalid object reference \"{referencePath}\"");
             }
 
-            return _responsesSchema.ResponsesDictionary.ContainsKey(referencePath) 
-                ? _responsesSchema.ResponsesDictionary[referencePath] 
+            return _responses.ResponsesDictionary.TryGetValue(referencePath, out var responseObject)
+                ? responseObject 
                 : throw new ArgumentException($"Reference \"{referencePath}\" not found", nameof(referencePath));
         }
 
@@ -74,7 +73,7 @@ namespace VKApiSchemaParser.Parsers
 
                 if (string.IsNullOrWhiteSpace(name))
                 {
-                    throw new Exception($"Invalid name \"{name}\"");
+                    throw new Exception($"Invalid object name \"{name}\"");
                 }
 
                 obj.Name = name?.Beautify();

@@ -1,37 +1,31 @@
 ﻿using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using VKApiSchemaParser.Extensions;
 using VKApiSchemaParser.Models;
-using VKApiSchemaParser.Models.Schemas;
 
 namespace VKApiSchemaParser.Parsers
 {
-    internal class ResponsesSchemaParser : BaseSchemaParser<ApiResponsesSchema>
+    internal class ResponsesSchemaParser : BaseSchemaParser<IDictionary<string, ApiObject>>
     {
-        private readonly ApiObjectsSchema _objectsSchema;
+        private readonly IDictionary<string, ApiObject> _objects;
 
-        public ResponsesSchemaParser(ApiObjectsSchema objectsSchema)
+        public ResponsesSchemaParser(IDictionary<string, ApiObject> objects)
         {
-            _objectsSchema = objectsSchema;
+            _objects = objects;
         }
 
         protected override string SchemaUrl => SchemaUrls.Responses;
 
-        protected override ApiResponsesSchema Parse(JSchema schema)
+        protected override IDictionary<string, ApiObject> ParseSchema(JSchema schema)
         {
             var definitions = schema.ExtensionData[JsonStringConstants.Definitions];
 
-            return new ApiResponsesSchema
-            {
-                SchemaVersion = schema.SchemaVersion,
-                Title = schema.Title,
-                ResponsesDictionary = definitions
-                    .Select(d => ParseObject(d.First, ObjectParsingOptions.NamedAndRegistered))
-                    .OrderBy(obj => obj.Name)
-                    .ToDictionary(obj => obj.OriginalName, obj => obj)
-            };
+            return definitions
+                .Select(d => ParseObject(d.First, ObjectParsingOptions.NamedAndRegistered))
+                .ToDictionary(obj => obj.OriginalName);
         }
 
         protected override ApiObject ResolveReference(string referencePath)
@@ -43,9 +37,10 @@ namespace VKApiSchemaParser.Parsers
                 throw new Exception($"Invalid reference \"{referencePath}\"");
             }
 
+            // to trygetvalue
             // Object database_street is missing, issue https://github.com/VKCOM/vk-api-schema/issues/44
-            return _objectsSchema.ObjectsDictionary.ContainsKey(referencePath) ?
-                _objectsSchema.ObjectsDictionary[referencePath] : null; // Replace NULL with Exception later
+            return _objects.ContainsKey(referencePath) ?
+                _objects[referencePath] : null; // Replace NULL with Exception later
         }
 
         protected override ApiObject ParseObject(JToken token, ObjectParsingOptions options)

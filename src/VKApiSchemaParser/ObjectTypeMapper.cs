@@ -5,7 +5,7 @@ namespace VKApiSchemaParser
 {
     internal static class ObjectTypeMapper
     {
-        private static IDictionary<string, ApiObjectType> TypesMapping = new Dictionary<string, ApiObjectType>
+        private static readonly IDictionary<string, ApiObjectType> _typesMapping = new Dictionary<string, ApiObjectType>
         {
             { JsonStringConstants.Multiple, ApiObjectType.Multiple },
             { JsonStringConstants.Object, ApiObjectType.Object },
@@ -18,7 +18,7 @@ namespace VKApiSchemaParser
 
         public static ApiObjectType Map(string typeName)
         {
-            return typeName == null || !TypesMapping.TryGetValue(typeName, out var objectType) 
+            return typeName == null || !_typesMapping.TryGetValue(typeName, out var objectType) 
                 ? ApiObjectType.Undefined 
                 : objectType; 
         }

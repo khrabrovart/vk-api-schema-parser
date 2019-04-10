@@ -5,21 +5,21 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using VKApiSchemaParser.Extensions;
 using VKApiSchemaParser.Models;
-using VKApiSchemaParser.Models.Schemas;
 
 namespace VKApiSchemaParser.Parsers
 {
-    internal class ObjectsSchemaParser : BaseSchemaParser<ApiObjectsSchema>
+    internal class ObjectsSchemaParser : BaseSchemaParser<IDictionary<string, ApiObject>>
     {
         private JToken _definitions;
-        private readonly Dictionary<string, ApiObject> _apiObjects = new Dictionary<string, ApiObject>();
+        private readonly IDictionary<string, ApiObject> _apiObjects = new Dictionary<string, ApiObject>();
 
         protected override string SchemaUrl => SchemaUrls.Objects;
 
-        protected override ApiObjectsSchema Parse(JSchema schema)
+        protected override IDictionary<string, ApiObject> ParseSchema(JSchema schema)
         {
             _definitions = schema.ExtensionData[JsonStringConstants.Definitions];
 
+            // to linq (where, select, todictionary)
             foreach (var definition in _definitions)
             {
                 if (!_apiObjects.ContainsKey(definition.Path))
@@ -28,14 +28,7 @@ namespace VKApiSchemaParser.Parsers
                 }
             }
 
-            return new ApiObjectsSchema
-            {
-                SchemaVersion = schema.SchemaVersion,
-                Title = schema.Title,
-                ObjectsDictionary = _apiObjects.Values
-                    .OrderBy(obj => obj.Name)
-                    .ToDictionary(obj => obj.OriginalName, obj => obj)
-            };
+            return _apiObjects;
         }
 
         protected override ApiObject ResolveReference(string referencePath)
@@ -47,6 +40,7 @@ namespace VKApiSchemaParser.Parsers
                 throw new Exception($"Invalid reference \"{referencePath}\"");
             }
 
+            // to trygetvalue
             return _apiObjects.ContainsKey(referencePath) ?
                 _apiObjects[referencePath] :
                 ParseObject(_definitions.FirstOrDefault(d => d.Path == referencePath)?.First, ObjectParsingOptions.NamedAndRegistered);
