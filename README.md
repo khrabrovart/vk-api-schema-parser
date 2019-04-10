@@ -1,3 +1,5 @@
+![Nuget](https://img.shields.io/nuget/v/VKApiSchemaParser.svg)
+
 # VK API Schema Parser
 
 VK (VKontakte) API JSON schema parser for .NET 
