@@ -30,24 +30,22 @@ namespace VKApiSchemaParser.Parsers
 
         protected override ApiObject ResolveReference(string referencePath)
         {
-            referencePath = referencePath.Split('/').LastOrDefault();
+            var referenceName = referencePath.Split('/').LastOrDefault();
 
-            if (string.IsNullOrWhiteSpace(referencePath))
+            if (string.IsNullOrWhiteSpace(referenceName))
             {
                 throw new Exception($"Invalid reference \"{referencePath}\"");
             }
 
-            // to trygetvalue
             // Object database_street is missing, issue https://github.com/VKCOM/vk-api-schema/issues/44
-            return _objects.ContainsKey(referencePath) ?
-                _objects[referencePath] : null; // Replace NULL with Exception later
+            return _objects.TryGetValue(referenceName, out var obj) ? obj : null; // Replace NULL with Exception later
         }
 
         protected override ApiObject ParseObject(JToken token, ObjectParsingOptions options)
         {
             if (token == null)
             {
-                return null; // Throw exception later.
+                throw new ArgumentNullException(nameof(token));
             }
 
             var obj = InitializeObject(token, options);

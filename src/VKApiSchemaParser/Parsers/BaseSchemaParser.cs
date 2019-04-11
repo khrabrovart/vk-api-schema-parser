@@ -60,7 +60,7 @@ namespace VKApiSchemaParser.Parsers
 
         protected void FillProperties(ApiObject obj, JToken token)
         {
-            var requiredProperties = token.GetPropertyAsArray(JsonStringConstants.Required).ToArray();
+            var requiredProperties = token.GetPropertyAsArray(JsonStringConstants.Required)?.ToArray();
 
             obj.Properties = GetProperties(token, JsonStringConstants.Properties, requiredProperties);
             obj.PatternProperties = GetProperties(token, JsonStringConstants.PatternProperties, requiredProperties);

@@ -11,10 +11,12 @@ namespace VKApiSchemaParser.Parsers
 {
     internal class MethodsSchemaParser : BaseSchemaParser<MethodsSchema>
     {
+        private readonly IDictionary<string, ApiObject> _objects;
         private readonly IDictionary<string, ApiObject> _responses;
 
-        public MethodsSchemaParser(IDictionary<string, ApiObject> responses)
+        public MethodsSchemaParser(IDictionary<string, ApiObject> objects, IDictionary<string, ApiObject> responses)
         {
+            _objects = objects;
             _responses = responses;
         }
 
@@ -34,16 +36,24 @@ namespace VKApiSchemaParser.Parsers
 
         protected override ApiObject ResolveReference(string referencePath)
         {
+            var referenceSchema = referencePath.Split('.').FirstOrDefault();
             referencePath = referencePath.Split('/').LastOrDefault();
 
-            if (string.IsNullOrWhiteSpace(referencePath))
+            if (string.IsNullOrWhiteSpace(referencePath) || string.IsNullOrWhiteSpace(referenceSchema))
             {
-                throw new ArgumentException($"Invalid object reference \"{referencePath}\"");
+                throw new ArgumentException($"Invalid reference \"{referencePath}\" in \"{referenceSchema}\" schema");
             }
 
-            return _responses.ResponsesDictionary.TryGetValue(referencePath, out var responseObject)
-                ? responseObject 
-                : throw new ArgumentException($"Reference \"{referencePath}\" not found", nameof(referencePath));
+            var referenceDictionary = referenceSchema == "objects" ? _objects : _responses;
+
+            if (!referenceDictionary.TryGetValue(referencePath, out var referenceObject))
+            {
+                // Some references do not exist. See issues on GitHub
+                return null; // Remove when all issues closed
+                throw new ArgumentException($"Reference \"{referencePath}\" in \"{referenceSchema}\" schema not found", nameof(referencePath));
+            }
+
+            return referenceObject;
         }
 
         protected override ApiObject ParseObject(JToken token, ObjectParsingOptions options)

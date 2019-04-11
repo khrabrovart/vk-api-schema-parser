@@ -3,13 +3,12 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using VKApiSchemaParser.Models.Schemas;
 
 namespace VKApiSchemaParser.Tests
 {
     public class Program
     {
-        private static readonly string[] _objectsTestSet = new string[]
+        private static readonly string[] _objectsTestSet =
         {
             "account_account_counters",
             "account_lookup_result",
@@ -35,15 +34,17 @@ namespace VKApiSchemaParser.Tests
             "base_ok_response",
             "friends_requests_mutual",
             "friends_friend_status",
+            "groups_address",
             "groups_cover",
             "groups_group_full",
             "groups_user_xtr_role",
             "newsfeed_newsfeed_item",
             "notifications_notification_parent",
-            "video_video_files"
+            "video_video_files",
+            "users_fields"
         };
 
-        private static readonly string[] _responsesTestSet = new string[]
+        private static readonly string[] _responsesTestSet =
         {
             "ok_response",
             "account_changePassword_response",
@@ -64,7 +65,7 @@ namespace VKApiSchemaParser.Tests
             "users_getSubscriptions_extended_response"
         };
 
-        private static readonly string[] _methodsTestSet = new string[]
+        private static readonly string[] _methodsTestSet =
         {
             "users.get",
             "users.getSubscriptions",
@@ -85,35 +86,29 @@ namespace VKApiSchemaParser.Tests
 
         public static async Task CheckObjectsAsync()
         {
-            var objectsSchema = (await VKApiSchema.ParseAsync()).ObjectsSchema;
-            objectsSchema.ObjectsDictionary = objectsSchema.ObjectsDictionary
-                .Where(o => _objectsTestSet.Contains(o.Key))
-                .ToDictionary(o => o.Key, o => o.Value);
+            var objects = (await VKApiSchema.ParseAsync()).Objects;
+            //objects = objects.Where(o => _objectsTestSet.Contains(o.Key)).ToDictionary(o => o.Key, o => o.Value);
 
-            var serializedSchema = SerializeObject(objectsSchema);
-            await SaveToFileAsync(serializedSchema, "objects");
+            var serializedSchema = SerializeObject(objects);
+            //await SaveToFileAsync(serializedSchema, "objects");
         }
 
         public static async Task CheckResonsesAsync()
         {
-            var responsesSchema = (await VKApiSchema.ParseAsync()).Responses;
-            responsesSchema.ResponsesDictionary = responsesSchema.ResponsesDictionary
-                .Where(o => _responsesTestSet.Contains(o.Key))
-                .ToDictionary(o => o.Key, o => o.Value);
+            var responses = (await VKApiSchema.ParseAsync()).Responses;
+            //responses = responses.Where(o => _responsesTestSet.Contains(o.Key)).ToDictionary(r => r.Key, r => r.Value);
 
-            var serializedSchema = SerializeObject(responsesSchema);
-            await SaveToFileAsync(serializedSchema, "responses");
+            var serializedSchema = SerializeObject(responses);
+            //await SaveToFileAsync(serializedSchema, "responses");
         }
 
         public static async Task CheckMethodsAsync()
         {
-            var methodsSchema = (await VKApiSchema.ParseAsync()).Methods;
-            methodsSchema.Methods = methodsSchema.Methods
-                .Where(o => _methodsTestSet.Contains(o.OriginalName))
-                .ToList();
+            var methods = (await VKApiSchema.ParseAsync()).Methods;
+            //methods = methods.Where(o => _methodsTestSet.Contains(o.Key)).ToDictionary(m => m.Key, m => m.Value);
 
-            var serializedSchema = SerializeObject(methodsSchema);
-            await SaveToFileAsync(serializedSchema, "methods");
+            var serializedSchema = SerializeObject(methods);
+            //await SaveToFileAsync(serializedSchema, "methods");
         }
 
         private static string SerializeObject(object schema)
@@ -129,7 +124,7 @@ namespace VKApiSchemaParser.Tests
         private static async Task SaveToFileAsync(string data, string prefix)
         {
             var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            var filePath = Path.Combine(desktopPath, $"{prefix}-{DateTime.Now.ToString("HHmmss")}.json");
+            var filePath = Path.Combine(desktopPath, $"{prefix}-{DateTime.Now:HHmmss}.json");
 
             await File.WriteAllTextAsync(filePath, data);
         }

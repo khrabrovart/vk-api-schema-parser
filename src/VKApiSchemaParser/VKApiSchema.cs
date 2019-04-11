@@ -10,7 +10,7 @@ namespace VKApiSchemaParser
         {
             var objects = await new ObjectsSchemaParser().ParseAsync().ConfigureAwait(false);
             var responses = await new ResponsesSchemaParser(objects).ParseAsync().ConfigureAwait(false);
-            var methodsSchema = await new MethodsSchemaParser(responses).ParseAsync().ConfigureAwait(false);
+            var methodsSchema = await new MethodsSchemaParser(objects, responses).ParseAsync().ConfigureAwait(false);
 
             return new ApiSchema
             {

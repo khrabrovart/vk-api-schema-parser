@@ -19,7 +19,6 @@ namespace VKApiSchemaParser.Parsers
         {
             _definitions = schema.ExtensionData[JsonStringConstants.Definitions];
 
-            // to linq (where, select, todictionary)
             foreach (var definition in _definitions)
             {
                 if (!_apiObjects.ContainsKey(definition.Path))
@@ -33,24 +32,35 @@ namespace VKApiSchemaParser.Parsers
 
         protected override ApiObject ResolveReference(string referencePath)
         {
-            referencePath = referencePath.Split('/').LastOrDefault();
+            var referenceName = referencePath.Split('/').LastOrDefault();
 
-            if (string.IsNullOrWhiteSpace(referencePath))
+            if (string.IsNullOrWhiteSpace(referenceName))
             {
                 throw new Exception($"Invalid reference \"{referencePath}\"");
             }
 
-            // to trygetvalue
-            return _apiObjects.ContainsKey(referencePath) ?
-                _apiObjects[referencePath] :
-                ParseObject(_definitions.FirstOrDefault(d => d.Path == referencePath)?.First, ObjectParsingOptions.NamedAndRegistered);
+            if (!_apiObjects.TryGetValue(referenceName, out var referenceObject))
+            {
+                var referenceDefinition = _definitions.FirstOrDefault(d => d.Path == referenceName)?.First;
+
+                if (referenceDefinition == null)
+                {
+                    // Some references do not exist. See issues on GitHub
+                    return null; // Remove when all issues closed
+                    throw new Exception($"Reference object \"{referencePath}\" not found");
+                }
+
+                return ParseObject(referenceDefinition, ObjectParsingOptions.NamedAndRegistered);
+            }
+
+            return referenceObject;
         }
 
         protected override ApiObject ParseObject(JToken token, ObjectParsingOptions options)
         {
             if (token == null)
             {
-                return null; // Throw exception later.
+                throw new ArgumentNullException(nameof(token));
             }
 
             var obj = InitializeObject(token, options);
