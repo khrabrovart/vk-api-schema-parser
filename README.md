@@ -1,6 +1,6 @@
 # VK API Schema Parser ![Nuget](https://img.shields.io/nuget/v/VKApiSchemaParser.svg)
 
-VK (VKontakte) API JSON schema parser for .NET 
+Easy to use VK (VKontakte) API JSON schema converter for .NET 
 
 ## Description
 Converts [VK API Schema](https://github.com/VKCOM/vk-api-schema) to C# objects.
@@ -22,10 +22,10 @@ Install-Package VKApiSchemaParser
 
 ## Usage
 ```csharp
-var vkApiSchema = new VKApiSchema();
-var vkApiObjects = await vkApiSchema.GetObjectsAsync();
-var vkApiResponses = await vkApiSchema.GetResponsesAsync();
-var vkApiMethods = await vkApiSchema.GetMethodsAsync();
-```
+var schema = await VKApiSchema.ParseAsync();
 
-Methods depends on responses, and responses depends on objects. So when method _GetMethodsAsync_ is called, responses and objects get loaded too.
+var objects = schema.Objects;
+var responses = schema.Responses;
+var methods = schema.Methods;
+var errors = schema.Errors;
+```
