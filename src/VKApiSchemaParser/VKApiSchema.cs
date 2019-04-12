@@ -4,8 +4,15 @@ using VKApiSchemaParser.Parsers;
 
 namespace VKApiSchemaParser
 {
+    /// <summary>
+    /// Represents API schema parser entry point.
+    /// </summary>
     public static class VKApiSchema
     {
+        /// <summary>
+        /// Parses API schema and returns all its content.
+        /// </summary>
+        /// <returns>API schema content.</returns>
         public static async Task<ApiSchema> ParseAsync()
         {
             var objects = await new ObjectsSchemaParser().ParseAsync().ConfigureAwait(false);

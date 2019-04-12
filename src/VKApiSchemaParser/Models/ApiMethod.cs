@@ -2,6 +2,9 @@
 
 namespace VKApiSchemaParser.Models
 {
+    /// <summary>
+    /// Represents API method.
+    /// </summary>
     public class ApiMethod
     {
         /// <summary>
