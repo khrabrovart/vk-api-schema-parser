@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -93,7 +94,7 @@ namespace VKApiSchemaParser.Parsers
 
         private IEnumerable<ApiObject> GetProperties(JToken token, string propertyName, IEnumerable<string> requiredProperties)
         {
-            return token.SelectPropertyOrDefault(propertyName, t => t
+            var parsedProperties = token.SelectPropertyOrDefault(propertyName, t => t
                 .Where(p => p.First != null)
                 .Select(p =>
                 {
@@ -105,7 +106,22 @@ namespace VKApiSchemaParser.Parsers
                     }
 
                     return newObject;
-                }));
+                }))
+                ?.ToArray();
+
+            var duplicateProperties = parsedProperties
+                ?.GroupBy(p => p.OriginalName)
+                .Where(g => g.Count() > 1)
+                .Select(g => g.Key)
+                .ToArray();
+
+            if (duplicateProperties != null && duplicateProperties.Any())
+            {
+                var propertiesString = string.Join(", ", duplicateProperties);
+                throw new Exception($"Duplicate properties {propertiesString}");
+            }
+
+            return parsedProperties;
         }
     }
 }

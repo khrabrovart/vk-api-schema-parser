@@ -36,7 +36,7 @@ namespace VKApiSchemaParser.Parsers
 
             if (string.IsNullOrWhiteSpace(referenceName))
             {
-                throw new Exception($"Invalid reference \"{referencePath}\"");
+                throw new ArgumentException($"Invalid reference \"{referencePath}\"", nameof(referencePath));
             }
 
             if (!_apiObjects.TryGetValue(referenceName, out var referenceObject))
@@ -45,9 +45,7 @@ namespace VKApiSchemaParser.Parsers
 
                 if (referenceDefinition == null)
                 {
-                    // Some references do not exist. See issues on GitHub
-                    return null; // Remove when all issues closed
-                    throw new Exception($"Reference object \"{referencePath}\" not found");
+                    throw new Exception($"Object \"{referencePath}\" in objects schema not found");
                 }
 
                 return ParseObject(referenceDefinition, ObjectParsingOptions.NamedAndRegistered);

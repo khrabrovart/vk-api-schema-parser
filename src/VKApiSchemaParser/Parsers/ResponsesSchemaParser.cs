@@ -23,9 +23,11 @@ namespace VKApiSchemaParser.Parsers
         {
             var definitions = schema.ExtensionData[JsonStringConstants.Definitions];
 
-            return definitions
+            var objectsDictionary = definitions
                 .Select(d => ParseObject(d.First, ObjectParsingOptions.NamedAndRegistered))
                 .ToDictionary(obj => obj.OriginalName);
+
+            return objectsDictionary;
         }
 
         protected override ApiObject ResolveReference(string referencePath)
@@ -34,11 +36,15 @@ namespace VKApiSchemaParser.Parsers
 
             if (string.IsNullOrWhiteSpace(referenceName))
             {
-                throw new Exception($"Invalid reference \"{referencePath}\"");
+                throw new ArgumentException($"Invalid reference \"{referencePath}\"", nameof(referencePath));
             }
 
-            // Object database_street is missing, issue https://github.com/VKCOM/vk-api-schema/issues/44
-            return _objects.TryGetValue(referenceName, out var obj) ? obj : null; // Replace NULL with Exception later
+            if (!_objects.TryGetValue(referenceName, out var referenceObject))
+            {
+                throw new Exception($"Object \"{referencePath}\" in objects schema not found");
+            }
+
+            return referenceObject;
         }
 
         protected override ApiObject ParseObject(JToken token, ObjectParsingOptions options)

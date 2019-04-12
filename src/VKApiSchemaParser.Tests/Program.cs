@@ -1,8 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using VKApiSchemaParser.Models;
+using VKApiSchemaParser.Models.Schemas;
 
 namespace VKApiSchemaParser.Tests
 {
@@ -79,36 +83,45 @@ namespace VKApiSchemaParser.Tests
 
         public static async Task Main(string[] args)
         {
-            await CheckObjectsAsync();
-            await CheckResonsesAsync();
-            await CheckMethodsAsync();
+            var schema = await VKApiSchema.ParseAsync();
+
+            Console.WriteLine("Schema processed");
+
+            Console.WriteLine("Processing objects...");
+            await CheckObjects(schema);
+            Console.WriteLine("Processing responses...");
+            await CheckResonses(schema);
+            Console.WriteLine("Processing methods...");
+            await CheckMethods(schema);
+
+            Console.WriteLine("All complete!");
         }
 
-        public static async Task CheckObjectsAsync()
+        public static async Task CheckObjects(ApiSchema schema)
         {
-            var objects = (await VKApiSchema.ParseAsync()).Objects;
+            var objects = schema.Objects;
             //objects = objects.Where(o => _objectsTestSet.Contains(o.Key)).ToDictionary(o => o.Key, o => o.Value);
 
             var serializedSchema = SerializeObject(objects);
-            //await SaveToFileAsync(serializedSchema, "objects");
+            await SaveToFileAsync(serializedSchema, "objects");
         }
 
-        public static async Task CheckResonsesAsync()
+        public static async Task CheckResonses(ApiSchema schema)
         {
-            var responses = (await VKApiSchema.ParseAsync()).Responses;
+            var responses = schema.Responses;
             //responses = responses.Where(o => _responsesTestSet.Contains(o.Key)).ToDictionary(r => r.Key, r => r.Value);
 
             var serializedSchema = SerializeObject(responses);
-            //await SaveToFileAsync(serializedSchema, "responses");
+            await SaveToFileAsync(serializedSchema, "responses");
         }
 
-        public static async Task CheckMethodsAsync()
+        public static async Task CheckMethods(ApiSchema schema)
         {
-            var methods = (await VKApiSchema.ParseAsync()).Methods;
+            var methods = schema.Methods;
             //methods = methods.Where(o => _methodsTestSet.Contains(o.Key)).ToDictionary(m => m.Key, m => m.Value);
 
             var serializedSchema = SerializeObject(methods);
-            //await SaveToFileAsync(serializedSchema, "methods");
+            await SaveToFileAsync(serializedSchema, "methods");
         }
 
         private static string SerializeObject(object schema)

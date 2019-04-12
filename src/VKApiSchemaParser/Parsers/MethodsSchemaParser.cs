@@ -27,30 +27,30 @@ namespace VKApiSchemaParser.Parsers
             var errorDefinitions = schema.ExtensionData[JsonStringConstants.Errors];
             var methodDefinitions = schema.ExtensionData[JsonStringConstants.Methods];
 
-            return new MethodsSchema
+            var methodsSchema = new MethodsSchema
             {
                 Errors = JsonConvert.DeserializeObject<IEnumerable<ApiError>>(errorDefinitions.ToString()).ToDictionary(err => err.Name),
                 Methods = methodDefinitions.Select(ParseMethod).ToDictionary(method => method.OriginalName)
             };
+
+            return methodsSchema;
         }
 
         protected override ApiObject ResolveReference(string referencePath)
         {
             var referenceSchema = referencePath.Split('.').FirstOrDefault();
-            referencePath = referencePath.Split('/').LastOrDefault();
+            var referenceName = referencePath.Split('/').LastOrDefault();
 
-            if (string.IsNullOrWhiteSpace(referencePath) || string.IsNullOrWhiteSpace(referenceSchema))
+            if (string.IsNullOrWhiteSpace(referenceName) || string.IsNullOrWhiteSpace(referenceSchema))
             {
                 throw new ArgumentException($"Invalid reference \"{referencePath}\" in \"{referenceSchema}\" schema");
             }
 
             var referenceDictionary = referenceSchema == "objects" ? _objects : _responses;
 
-            if (!referenceDictionary.TryGetValue(referencePath, out var referenceObject))
+            if (!referenceDictionary.TryGetValue(referenceName, out var referenceObject))
             {
-                // Some references do not exist. See issues on GitHub
-                return null; // Remove when all issues closed
-                throw new ArgumentException($"Reference \"{referencePath}\" in \"{referenceSchema}\" schema not found", nameof(referencePath));
+                throw new Exception($"Object \"{referencePath}\" in {referenceSchema} schema not found");
             }
 
             return referenceObject;
@@ -86,7 +86,7 @@ namespace VKApiSchemaParser.Parsers
                     throw new Exception($"Invalid object name \"{name}\"");
                 }
 
-                obj.Name = name?.Beautify();
+                obj.Name = name.Beautify();
                 obj.OriginalName = name;
             }
 
