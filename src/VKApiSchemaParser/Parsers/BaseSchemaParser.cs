@@ -85,7 +85,7 @@ namespace VKApiSchemaParser.Parsers
         {
             obj.Description = token.GetPropertyAsString(JsonStringConstants.Description);
             obj.Minimum = token.GetPropertyAsInteger(JsonStringConstants.Minimum);
-            obj.Enum = token.GetPropertyAsArray(JsonStringConstants.Enum);
+            obj.Enum = token.GetPropertyAsArray(JsonStringConstants.Enum)?.Select(item => item.Beautify());
             obj.EnumNames = token.GetPropertyAsArray(JsonStringConstants.EnumNames)?.Select(item => item.Beautify());
             obj.Items = token.SelectPropertyOrDefault(JsonStringConstants.Items, ParseNestedObject);
             obj.AllOf = token.SelectPropertyOrDefault(JsonStringConstants.AllOf, t => t.Select(ParseNestedObject));

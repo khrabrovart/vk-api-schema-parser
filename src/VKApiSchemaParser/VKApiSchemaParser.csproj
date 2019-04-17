@@ -7,14 +7,17 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <PackageId>VKApiSchemaParser</PackageId>
-    <Title>VK API Schema Parser</Title>
-    <Description>Easy to use VK API schema converter for .NET</Description>
+    <Title>VK (originally VKontakte) API Schema Parser</Title>
+    <Description>Easy to use VK (originally VKontakte) API schema converter for .NET</Description>
     <Authors>Arthur Khrabrov</Authors>
     <Owners>Arthur Khrabrov</Owners>
     <PackageIconUrl>https://github.com/khrabrovart/vk-api-schema-parser/blob/master/icon.png?raw=true</PackageIconUrl>
     <PackageProjectUrl>https://github.com/khrabrovart/vk-api-schema-parser</PackageProjectUrl>
     <PackageReleaseNotes>
-      Docs: https://github.com/khrabrovart/vk-api-schema-parser
+- Optimized beautifier
+- Added beautifier for enum values
+      
+Documentation: https://github.com/khrabrovart/vk-api-schema-parser
     </PackageReleaseNotes>
     <Copyright>Copyright 2018 (C) Arthur Khrabrov. All rights reserved.</Copyright>
     <PackageTags>vk api json schema vkapi parser converter</PackageTags>
@@ -25,10 +28,10 @@
     <IncludeSource>True</IncludeSource>
     <IncludeSymbols>True</IncludeSymbols>
     
-    <AssemblyVersion>1.0.0</AssemblyVersion>
-    <FileVersion>1.0.0</FileVersion>
-    <PackageVersion>1.0.0</PackageVersion>
-    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.1</AssemblyVersion>
+    <FileVersion>1.0.1</FileVersion>
+    <PackageVersion>1.0.1</PackageVersion>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net461'">

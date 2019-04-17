@@ -8,8 +8,17 @@ namespace VKApiSchemaParser.Tests
 {
     public class Program
     {
+        private const string OutputDirectory = "parsed";
+
         public static async Task Main(string[] args)
         {
+            if (Directory.Exists(OutputDirectory))
+            {
+                Directory.Delete(OutputDirectory, true);
+            }
+
+            Directory.CreateDirectory(OutputDirectory);
+
             var schema = await VKApiSchema.ParseAsync();
 
             Console.WriteLine("Schema processed");
@@ -22,9 +31,6 @@ namespace VKApiSchemaParser.Tests
 
             Console.WriteLine("Processing methods...");
             await CheckMethods(schema);
-
-            Console.WriteLine("All complete!");
-            Console.ReadKey();
         }
 
         public static async Task CheckObjects(ApiSchema schema)
@@ -60,9 +66,7 @@ namespace VKApiSchemaParser.Tests
 
         private static async Task SaveToFileAsync(string data, string prefix)
         {
-            var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            var filePath = Path.Combine(desktopPath, $"{prefix}-{DateTime.Now:HHmmss}.json");
-
+            var filePath = $"{OutputDirectory}\\{prefix}-{DateTime.Now:HHmmss}.json";
             await File.WriteAllTextAsync(filePath, data);
         }
     }
