@@ -1,6 +1,6 @@
 # VK API Schema Parser ![Nuget](https://img.shields.io/nuget/v/VKApiSchemaParser.svg)
 
-Easy to use VK (VKontakte) API JSON schema converter for .NET 
+Easy to use VK (originally VKontakte) API JSON schema converter for .NET 
 
 ## Description
 Converts [VK API Schema](https://github.com/VKCOM/vk-api-schema) to C# objects.
