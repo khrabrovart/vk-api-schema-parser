@@ -85,8 +85,8 @@ namespace VKApiSchemaParser.Parsers
         {
             obj.Description = token.GetPropertyAsString(JsonStringConstants.Description);
             obj.Minimum = token.GetPropertyAsInteger(JsonStringConstants.Minimum);
-            obj.Enum = token.GetPropertyAsArray(JsonStringConstants.Enum)?.Select(item => item.Beautify());
-            obj.EnumNames = token.GetPropertyAsArray(JsonStringConstants.EnumNames)?.Select(item => item.Beautify());
+            obj.Enum = token.GetPropertyAsArray(JsonStringConstants.Enum);
+            obj.EnumNames = token.GetPropertyAsArray(JsonStringConstants.EnumNames);
             obj.Items = token.SelectPropertyOrDefault(JsonStringConstants.Items, ParseNestedObject);
             obj.AllOf = token.SelectPropertyOrDefault(JsonStringConstants.AllOf, t => t.Select(ParseNestedObject));
             obj.OneOf = token.SelectPropertyOrDefault(JsonStringConstants.OneOf, t => t.Select(ParseNestedObject));
@@ -102,7 +102,7 @@ namespace VKApiSchemaParser.Parsers
 
                     if (requiredProperties != null)
                     {
-                        newObject.IsRequired = requiredProperties.Contains(newObject.OriginalName);
+                        newObject.IsRequired = requiredProperties.Contains(newObject.Name);
                     }
 
                     return newObject;
@@ -110,7 +110,7 @@ namespace VKApiSchemaParser.Parsers
                 ?.ToArray();
 
             var duplicateProperties = parsedProperties
-                ?.GroupBy(p => p.OriginalName)
+                ?.GroupBy(p => p.Name)
                 .Where(g => g.Count() > 1)
                 .Select(g => g.Key)
                 .ToArray();

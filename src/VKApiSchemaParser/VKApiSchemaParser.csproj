@@ -8,18 +8,19 @@
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <PackageId>VKApiSchemaParser</PackageId>
     <Title>VK (originally VKontakte) API Schema Parser</Title>
-    <Description>Easy to use VK (originally VKontakte) API schema converter for .NET</Description>
+    <Description>Easy-to-use VK (originally VKontakte) API schema converter for .NET</Description>
     <Authors>Arthur Khrabrov</Authors>
     <Owners>Arthur Khrabrov</Owners>
     <PackageIconUrl>https://github.com/khrabrovart/vk-api-schema-parser/blob/master/icon.png?raw=true</PackageIconUrl>
     <PackageProjectUrl>https://github.com/khrabrovart/vk-api-schema-parser</PackageProjectUrl>
     <PackageReleaseNotes>
-- Optimized beautifier
-- Added beautifier for enum values
+- Completely removed beautifiers
+- Removed "OriginalName" properties
+- "Name" properties now contain old "OriginamName" values
       
 Documentation: https://github.com/khrabrovart/vk-api-schema-parser
     </PackageReleaseNotes>
-    <Copyright>Copyright 2018 (C) Arthur Khrabrov. All rights reserved.</Copyright>
+    <Copyright>Copyright 2019 (C) Arthur Khrabrov. All rights reserved.</Copyright>
     <PackageTags>vk api json schema vkapi parser converter</PackageTags>
     <PackageLicenseUrl>https://github.com/khrabrovart/vk-api-schema-parser/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/khrabrovart/vk-api-schema-parser</RepositoryUrl>
@@ -28,10 +29,10 @@ Documentation: https://github.com/khrabrovart/vk-api-schema-parser
     <IncludeSource>True</IncludeSource>
     <IncludeSymbols>True</IncludeSymbols>
     
-    <AssemblyVersion>1.0.1</AssemblyVersion>
-    <FileVersion>1.0.1</FileVersion>
-    <PackageVersion>1.0.1</PackageVersion>
-    <Version>1.0.1</Version>
+    <AssemblyVersion>1.0.2</AssemblyVersion>
+    <FileVersion>1.0.2</FileVersion>
+    <PackageVersion>1.0.2</PackageVersion>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
@@ -40,8 +41,8 @@ Documentation: https://github.com/khrabrovart/vk-api-schema-parser
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
-    <PackageReference Include="Newtonsoft.Json.Schema" Version="3.0.9" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Newtonsoft.Json.Schema" Version="3.0.10" />
   </ItemGroup>
 
 </Project>

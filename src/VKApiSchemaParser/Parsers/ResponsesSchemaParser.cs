@@ -25,7 +25,7 @@ namespace VKApiSchemaParser.Parsers
 
             var objectsDictionary = definitions
                 .Select(d => ParseObject(d.First, ObjectParsingOptions.NamedAndRegistered))
-                .ToDictionary(obj => obj.OriginalName);
+                .ToDictionary(obj => obj.Name);
 
             return objectsDictionary;
         }
@@ -85,8 +85,7 @@ namespace VKApiSchemaParser.Parsers
                     throw new Exception($"Invalid name \"{name}\"");
                 }
 
-                obj.Name = name.Beautify();
-                obj.OriginalName = name;
+                obj.Name = name;
             }
 
             return obj;

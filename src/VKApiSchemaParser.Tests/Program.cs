@@ -10,14 +10,12 @@ namespace VKApiSchemaParser.Tests
     {
         private const string OutputDirectory = "parsed";
 
-        public static async Task Main(string[] args)
+        public static async Task Main()
         {
-            if (Directory.Exists(OutputDirectory))
+            if (!Directory.Exists(OutputDirectory))
             {
-                Directory.Delete(OutputDirectory, true);
+                Directory.CreateDirectory(OutputDirectory);
             }
-
-            Directory.CreateDirectory(OutputDirectory);
 
             var schema = await VKApiSchema.ParseAsync();
 
@@ -66,7 +64,7 @@ namespace VKApiSchemaParser.Tests
 
         private static async Task SaveToFileAsync(string data, string prefix)
         {
-            var filePath = $"{OutputDirectory}\\{prefix}-{DateTime.Now:HHmmss}.json";
+            var filePath = $"{OutputDirectory}\\{prefix}.json";
             await File.WriteAllTextAsync(filePath, data);
         }
     }

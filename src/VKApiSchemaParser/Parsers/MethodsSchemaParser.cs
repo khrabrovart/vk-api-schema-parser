@@ -30,7 +30,7 @@ namespace VKApiSchemaParser.Parsers
             var methodsSchema = new MethodsSchema
             {
                 Errors = JsonConvert.DeserializeObject<IEnumerable<ApiError>>(errorDefinitions.ToString()).ToDictionary(err => err.Name),
-                Methods = methodDefinitions.Select(ParseMethod).ToDictionary(method => method.OriginalName)
+                Methods = methodDefinitions.Select(ParseMethod).ToDictionary(method => method.FullName)
             };
 
             return methodsSchema;
@@ -83,11 +83,10 @@ namespace VKApiSchemaParser.Parsers
 
                 if (string.IsNullOrWhiteSpace(name))
                 {
-                    throw new Exception($"Invalid object name \"{name}\"");
+                    throw new Exception($"Invalid object's name \"{name}\"");
                 }
 
-                obj.Name = name.Beautify();
-                obj.OriginalName = name;
+                obj.Name = name;
             }
 
             return obj;
@@ -100,9 +99,9 @@ namespace VKApiSchemaParser.Parsers
             var name = token.GetPropertyAsString(JsonStringConstants.Name);
             var splittedName = name.Split('.');
 
-            method.OriginalName = name;
-            method.Group = splittedName[0].Beautify();
-            method.Name = splittedName[1].Beautify();
+            method.FullName = name;
+            method.Group = splittedName[0];
+            method.Name = splittedName[1];
             method.Description = token.GetPropertyAsString(JsonStringConstants.Description);
 
             var accessTokenTypesString = token.GetPropertyAsString(JsonStringConstants.AccessTokenType);
@@ -132,8 +131,7 @@ namespace VKApiSchemaParser.Parsers
 
             var name = token.GetPropertyAsString(JsonStringConstants.Name);
 
-            parameter.Name = name.Beautify();
-            parameter.OriginalName = name;
+            parameter.Name = name;
 
             var type = token.GetPropertyAsArray(JsonStringConstants.Type)?.Count() > 1 ?
                 JsonStringConstants.Multiple :
@@ -143,7 +141,7 @@ namespace VKApiSchemaParser.Parsers
 
             parameter.Description = token.GetPropertyAsString(JsonStringConstants.Description);
             parameter.Enum = token.GetPropertyAsArray(JsonStringConstants.Enum);
-            parameter.EnumNames = token.GetPropertyAsArray(JsonStringConstants.EnumNames)?.Select(item => item.Beautify());
+            parameter.EnumNames = token.GetPropertyAsArray(JsonStringConstants.EnumNames);
             parameter.Minimum = token.GetPropertyAsInteger(JsonStringConstants.Minimum);
             parameter.Maximum = token.GetPropertyAsInteger(JsonStringConstants.Maximum);
             parameter.Default = token.GetPropertyAsString(JsonStringConstants.Default);

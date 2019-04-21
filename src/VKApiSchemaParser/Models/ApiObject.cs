@@ -8,14 +8,9 @@ namespace VKApiSchemaParser.Models
     public class ApiObject
     {
         /// <summary>
-        /// Gets or sets beautified object's name.
+        /// Gets or sets object's name.
         /// </summary>
         public string Name { get; set; }
-
-        /// <summary>
-        /// Gets or sets original object's name.
-        /// </summary>
-        public string OriginalName { get; set; }
 
         /// <summary>
         /// Gets or sets object's type as enumerable.

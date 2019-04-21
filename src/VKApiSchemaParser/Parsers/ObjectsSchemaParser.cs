@@ -82,11 +82,10 @@ namespace VKApiSchemaParser.Parsers
 
                 if (string.IsNullOrWhiteSpace(name))
                 {
-                    throw new Exception($"Invalid name \"{name}\"");
+                    throw new Exception($"Invalid object's name \"{name}\"");
                 }
 
-                obj.Name = name.Beautify();
-                obj.OriginalName = name;
+                obj.Name = name;
 
                 // Registration is only needed for top-level objects.
                 if (options == ObjectParsingOptions.NamedAndRegistered)

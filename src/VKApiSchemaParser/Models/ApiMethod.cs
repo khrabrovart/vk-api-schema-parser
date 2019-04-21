@@ -20,7 +20,7 @@ namespace VKApiSchemaParser.Models
         /// <summary>
         /// Gets or sets method's original full name.
         /// </summary>
-        public string OriginalName { get; set; }
+        public string FullName { get; set; }
 
         /// <summary>
         /// Gets or sets method's description.
