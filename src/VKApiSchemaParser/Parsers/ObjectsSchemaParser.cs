@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
-using VKApiSchemaParser.Extensions;
 using VKApiSchemaParser.Models;
 
 namespace VKApiSchemaParser.Parsers
@@ -23,7 +22,7 @@ namespace VKApiSchemaParser.Parsers
             {
                 if (!_apiObjects.ContainsKey(definition.Path))
                 {
-                    ParseObject(definition.First, ObjectParsingOptions.NamedAndRegistered);
+                    ParseObject(definition.First, ObjectParserOptions.NamedAndRegistered);
                 }
             }
 
@@ -48,13 +47,13 @@ namespace VKApiSchemaParser.Parsers
                     throw new Exception($"Object \"{referencePath}\" in objects schema not found");
                 }
 
-                return ParseObject(referenceDefinition, ObjectParsingOptions.NamedAndRegistered);
+                return ParseObject(referenceDefinition, ObjectParserOptions.NamedAndRegistered);
             }
 
             return referenceObject;
         }
 
-        protected override ApiObject ParseObject(JToken token, ObjectParsingOptions options)
+        protected override ApiObject ParseObject(JToken token, ObjectParserOptions options)
         {
             if (token == null)
             {
@@ -62,21 +61,16 @@ namespace VKApiSchemaParser.Parsers
             }
 
             var obj = InitializeObject(token, options);
-
-            FillType(obj, token);
-            FillProperties(obj, token);
-            FillReference(obj, token);
-            FillOther(obj, token);
-
+            FillObject(obj, token);
             return obj;
         }
 
-        private ApiObject InitializeObject(JToken token, ObjectParsingOptions options)
+        private ApiObject InitializeObject(JToken token, ObjectParserOptions options)
         {
             var obj = new ApiObject();
 
             // All registered objects have names. Objects without names cannot be registered.
-            if (options >= ObjectParsingOptions.Named)
+            if (options >= ObjectParserOptions.Named)
             {
                 var name = token.Path.Split('.').LastOrDefault();
 
@@ -88,7 +82,7 @@ namespace VKApiSchemaParser.Parsers
                 obj.Name = name;
 
                 // Registration is only needed for top-level objects.
-                if (options == ObjectParsingOptions.NamedAndRegistered)
+                if (options == ObjectParserOptions.NamedAndRegistered)
                 {
                     _apiObjects.Add(name, obj);
                 }

@@ -11,7 +11,7 @@ namespace VKApiSchemaParser.Parsers
 {
     internal abstract class BaseSchemaParser<T>
     {
-        protected enum ObjectParsingOptions
+        protected enum ObjectParserOptions
         {
             Unnamed,
             Named,
@@ -36,10 +36,16 @@ namespace VKApiSchemaParser.Parsers
 
         protected abstract ApiObject ResolveReference(string referencePath);
 
-        protected abstract ApiObject ParseObject(JToken token, ObjectParsingOptions options);
+        protected abstract ApiObject ParseObject(JToken token, ObjectParserOptions options);
 
         protected ApiObject ParseNestedObject(JToken token)
         {
+            // TODO: remove this check when "notifications_get_response" "items" property will NOT be an empty array
+            if (!token.Any())
+            {
+                return null;
+            }
+
             var referencePath = token.GetPropertyAsString(JsonStringConstants.Reference);
 
             if (!string.IsNullOrWhiteSpace(referencePath))
@@ -47,20 +53,19 @@ namespace VKApiSchemaParser.Parsers
                 return ResolveReference(referencePath);
             }
 
-            return ParseObject(token, ObjectParsingOptions.Unnamed);
+            return ParseObject(token, ObjectParserOptions.Unnamed);
         }
 
-        protected void FillType(ApiObject obj, JToken token)
+        protected void FillObject(ApiObject obj, JToken token)
         {
+            // Type
             var type = token.GetPropertyAsArray(JsonStringConstants.Type)?.Count() > 1 ?
                 JsonStringConstants.Multiple :
                 token.GetPropertyAsString(JsonStringConstants.Type);
 
             obj.Type = ObjectTypeMapper.Map(type);
-        }
 
-        protected void FillProperties(ApiObject obj, JToken token)
-        {
+            // Properties
             var requiredProperties = token.GetPropertyAsArray(JsonStringConstants.Required)?.ToArray();
 
             obj.Properties = GetProperties(token, JsonStringConstants.Properties, requiredProperties);
@@ -69,36 +74,32 @@ namespace VKApiSchemaParser.Parsers
             obj.MinProperties = token.GetPropertyAsInteger(JsonStringConstants.MinProperties);
             obj.MaxProperties = token.GetPropertyAsInteger(JsonStringConstants.MaxProperties);
             obj.AdditionalProperties = token.GetPropertyAsBoolean(JsonStringConstants.AdditionalProperties) == true;
-        }
 
-        protected void FillReference(ApiObject obj, JToken token)
-        {
+            // Reference
             var reference = token.GetPropertyAsString(JsonStringConstants.Reference);
 
             if (!string.IsNullOrWhiteSpace(reference))
             {
                 obj.Reference = ResolveReference(reference);
             }
-        }
 
-        protected void FillOther(ApiObject obj, JToken token)
-        {
+            // Other
             obj.Description = token.GetPropertyAsString(JsonStringConstants.Description);
             obj.Minimum = token.GetPropertyAsInteger(JsonStringConstants.Minimum);
             obj.Enum = token.GetPropertyAsArray(JsonStringConstants.Enum);
             obj.EnumNames = token.GetPropertyAsArray(JsonStringConstants.EnumNames);
-            obj.Items = token.SelectPropertyOrDefault(JsonStringConstants.Items, ParseNestedObject);
-            obj.AllOf = token.SelectPropertyOrDefault(JsonStringConstants.AllOf, t => t.Select(ParseNestedObject));
-            obj.OneOf = token.SelectPropertyOrDefault(JsonStringConstants.OneOf, t => t.Select(ParseNestedObject));
+            obj.Items = token.SelectPropertyValueOrDefault(JsonStringConstants.Items, ParseNestedObject);
+            obj.AllOf = token.SelectPropertyValueOrDefault(JsonStringConstants.AllOf, t => t.Select(ParseNestedObject));
+            obj.OneOf = token.SelectPropertyValueOrDefault(JsonStringConstants.OneOf, t => t.Select(ParseNestedObject));
         }
 
         private IEnumerable<ApiObject> GetProperties(JToken token, string propertyName, IEnumerable<string> requiredProperties)
         {
-            var parsedProperties = token.SelectPropertyOrDefault(propertyName, t => t
+            var parsedProperties = token.SelectPropertyValueOrDefault(propertyName, t => t
                 .Where(p => p.First != null)
                 .Select(p =>
                 {
-                    var newObject = ParseObject(p.First, ObjectParsingOptions.Named);
+                    var newObject = ParseObject(p.First, ObjectParserOptions.Named);
 
                     if (requiredProperties != null)
                     {

@@ -3,7 +3,6 @@ using Newtonsoft.Json.Schema;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using VKApiSchemaParser.Extensions;
 using VKApiSchemaParser.Models;
 
 namespace VKApiSchemaParser.Parsers
@@ -24,7 +23,7 @@ namespace VKApiSchemaParser.Parsers
             var definitions = schema.ExtensionData[JsonStringConstants.Definitions];
 
             var objectsDictionary = definitions
-                .Select(d => ParseObject(d.First, ObjectParsingOptions.NamedAndRegistered))
+                .Select(d => ParseObject(d.First, ObjectParserOptions.NamedAndRegistered))
                 .ToDictionary(obj => obj.Name);
 
             return objectsDictionary;
@@ -47,7 +46,7 @@ namespace VKApiSchemaParser.Parsers
             return referenceObject;
         }
 
-        protected override ApiObject ParseObject(JToken token, ObjectParsingOptions options)
+        protected override ApiObject ParseObject(JToken token, ObjectParserOptions options)
         {
             if (token == null)
             {
@@ -58,25 +57,21 @@ namespace VKApiSchemaParser.Parsers
 
             // Replacing actual response object with its 'response' property.
             // Only for top-level objects.
-            if (options == ObjectParsingOptions.NamedAndRegistered)
+            if (options == ObjectParserOptions.NamedAndRegistered)
             {
                 token = token[JsonStringConstants.Properties]["response"];
             }
 
-            FillType(obj, token);
-            FillProperties(obj, token);
-            FillReference(obj, token);
-            FillOther(obj, token);
-
+            FillObject(obj, token);
             return obj;
         }
 
-        private ApiObject InitializeObject(JToken token, ObjectParsingOptions options)
+        private ApiObject InitializeObject(JToken token, ObjectParserOptions options)
         {
             var obj = new ApiObject();
 
             // All registered objects have names. Objects without names cannot be registered.
-            if (options >= ObjectParsingOptions.Named)
+            if (options >= ObjectParserOptions.Named)
             {
                 var name = token.Path.Split('.').LastOrDefault();
 

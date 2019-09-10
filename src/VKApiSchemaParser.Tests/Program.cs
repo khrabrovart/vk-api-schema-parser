@@ -17,18 +17,25 @@ namespace VKApiSchemaParser.Tests
                 Directory.CreateDirectory(OutputDirectory);
             }
 
-            var schema = await VKApiSchema.ParseAsync();
+			try
+			{
+				var schema = await VKApiSchema.ParseAsync();
 
-            Console.WriteLine("Schema processed");
+				Console.WriteLine("Schema processed");
 
-            Console.WriteLine("Processing objects...");
-            await CheckObjects(schema);
+				Console.WriteLine("Processing objects...");
+				await CheckObjects(schema);
 
-            Console.WriteLine("Processing responses...");
-            await CheckResonses(schema);
+				Console.WriteLine("Processing responses...");
+				await CheckResonses(schema);
 
-            Console.WriteLine("Processing methods...");
-            await CheckMethods(schema);
+				Console.WriteLine("Processing methods...");
+				await CheckMethods(schema);
+			}
+			catch (Exception ex)
+			{ 
+				Console.WriteLine($"Exception occured! {ex.Message}");
+			}
         }
 
         public static async Task CheckObjects(ApiSchema schema)

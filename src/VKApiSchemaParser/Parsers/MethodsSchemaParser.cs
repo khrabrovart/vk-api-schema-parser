@@ -56,7 +56,7 @@ namespace VKApiSchemaParser.Parsers
             return referenceObject;
         }
 
-        protected override ApiObject ParseObject(JToken token, ObjectParsingOptions options)
+        protected override ApiObject ParseObject(JToken token, ObjectParserOptions options)
         {
             if (token == null)
             {
@@ -64,20 +64,15 @@ namespace VKApiSchemaParser.Parsers
             }
 
             var obj = InitializeObject(token, options);
-
-            FillType(obj, token);
-            FillProperties(obj, token);
-            FillReference(obj, token);
-            FillOther(obj, token);
-
+            FillObject(obj, token);
             return obj;
         }
 
-        private ApiObject InitializeObject(JToken token, ObjectParsingOptions options)
+        private ApiObject InitializeObject(JToken token, ObjectParserOptions options)
         {
             var obj = new ApiObject();
 
-            if (options >= ObjectParsingOptions.Named)
+            if (options >= ObjectParserOptions.Named)
             {
                 var name = token.Path.Split('.').LastOrDefault();
 
@@ -117,10 +112,10 @@ namespace VKApiSchemaParser.Parsers
             }
 
             method.Parameters = token
-                .SelectPropertyOrDefault(JsonStringConstants.Parameters, t => t.Select(ParseMethodParameter));
+                .SelectPropertyValueOrDefault(JsonStringConstants.Parameters, t => t.Select(ParseMethodParameter));
 
             method.Responses = token
-                .SelectPropertyOrDefault(JsonStringConstants.Responses, t => t.Select(tc => ParseObject(tc.First, ObjectParsingOptions.Named)));
+                .SelectPropertyValueOrDefault(JsonStringConstants.Responses, t => t.Select(tc => ParseObject(tc.First, ObjectParserOptions.Named)));
 
             return method;
         }
@@ -148,7 +143,7 @@ namespace VKApiSchemaParser.Parsers
             parameter.MinLength = token.GetPropertyAsInteger(JsonStringConstants.MinLength);
             parameter.MaxLength = token.GetPropertyAsInteger(JsonStringConstants.MaxLength);
             parameter.MaxItems = token.GetPropertyAsInteger(JsonStringConstants.MaxItems);
-            parameter.Items = token.SelectPropertyOrDefault(JsonStringConstants.Items, ParseNestedObject);
+            parameter.Items = token.SelectPropertyValueOrDefault(JsonStringConstants.Items, ParseNestedObject);
             parameter.IsRequired = token.GetPropertyAsBoolean(JsonStringConstants.Required) == true;
 
             return parameter;
