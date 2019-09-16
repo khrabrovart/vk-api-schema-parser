@@ -13,7 +13,7 @@ namespace VKApiSchemaParser.Models
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets object's type as enumerable.
+        /// Gets or sets object's type.
         /// </summary>
         public ApiObjectType Type { get; set; }
 
@@ -72,9 +72,19 @@ namespace VKApiSchemaParser.Models
         public int? MaxProperties { get; set; }
 
         /// <summary>
-        /// Gets or sets object's additional properties value.
+        /// Gets or sets object's "additional properties" value.
         /// </summary>
         public bool AdditionalProperties { get; set; }
+
+        /// <summary>
+        /// Gets or sets object's "with setters" value.
+        /// </summary>
+        public bool WithSetters { get; set; }
+
+        /// <summary>
+        /// Gets or sets object's "without refs" value.
+        /// </summary>
+        public bool WithoutRefs { get; set; }
 
         /// <summary>
         /// Gets or sets minimum value.
@@ -90,5 +100,10 @@ namespace VKApiSchemaParser.Models
         /// Gets or sets flag whether (object) property is required or not.
         /// </summary>
         public bool IsRequired { get; set; }
+
+        /// <summary>
+        /// Gets or sets object's (only strings) format.
+        /// </summary>
+        public ApiStringFormat? Format { get; set; }
     }
 }

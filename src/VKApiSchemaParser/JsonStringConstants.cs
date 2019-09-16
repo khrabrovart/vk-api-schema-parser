@@ -12,6 +12,7 @@
         public const string Enum = "enum";
         public const string EnumNames = "enumNames";
         public const string Errors = "errors";
+        public const string Format = "format";
         public const string Items = "items";
         public const string MaxItems = "maxItems";
         public const string MaxLength = "maxLength";
@@ -31,6 +32,8 @@
         public const string Response = "response";
         public const string Responses = "responses";
         public const string Type = "type";
+        public const string WithoutRefs = "withoutRefs";
+        public const string WithSetters = "withSetters";
 
         #region Types
 
@@ -52,6 +55,12 @@
         public const string Open = "open";
         public const string Service = "service";
         public const string User = "user";
+
+        #endregion
+
+        #region String Formats
+
+        public const string Uri = "uri";
 
         #endregion
     }

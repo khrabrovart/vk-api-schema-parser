@@ -65,6 +65,9 @@ namespace VKApiSchemaParser.Parsers
 
             obj.Type = ObjectTypeMapper.Map(type);
 
+            // Format
+            obj.Format = StringFormatMapper.Map(token.GetPropertyAsString(JsonStringConstants.Format));
+
             // Properties
             var requiredProperties = token.GetPropertyAsArray(JsonStringConstants.Required)?.ToArray();
 
@@ -88,6 +91,8 @@ namespace VKApiSchemaParser.Parsers
             obj.Minimum = token.GetPropertyAsInteger(JsonStringConstants.Minimum);
             obj.Enum = token.GetPropertyAsArray(JsonStringConstants.Enum);
             obj.EnumNames = token.GetPropertyAsArray(JsonStringConstants.EnumNames);
+            obj.WithSetters = token.GetPropertyAsBoolean(JsonStringConstants.WithSetters) == true;
+            obj.WithoutRefs = token.GetPropertyAsBoolean(JsonStringConstants.WithoutRefs) == true;
             obj.Items = token.SelectPropertyValueOrDefault(JsonStringConstants.Items, ParseNestedObject);
             obj.AllOf = token.SelectPropertyValueOrDefault(JsonStringConstants.AllOf, t => t.Select(ParseNestedObject));
             obj.OneOf = token.SelectPropertyValueOrDefault(JsonStringConstants.OneOf, t => t.Select(ParseNestedObject));
