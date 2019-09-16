@@ -14,10 +14,6 @@
     <PackageIconUrl>https://github.com/khrabrovart/vk-api-schema-parser/blob/master/icon.png?raw=true</PackageIconUrl>
     <PackageProjectUrl>https://github.com/khrabrovart/vk-api-schema-parser</PackageProjectUrl>
     <PackageReleaseNotes>
-- Completely removed beautifiers
-- Removed "OriginalName" properties
-- "Name" properties now contain old "OriginamName" values
-      
 Documentation: https://github.com/khrabrovart/vk-api-schema-parser
     </PackageReleaseNotes>
     <Copyright>Copyright 2019 (C) Arthur Khrabrov. All rights reserved.</Copyright>
@@ -29,10 +25,10 @@ Documentation: https://github.com/khrabrovart/vk-api-schema-parser
     <IncludeSource>True</IncludeSource>
     <IncludeSymbols>True</IncludeSymbols>
     
-    <AssemblyVersion>1.0.2</AssemblyVersion>
-    <FileVersion>1.0.2</FileVersion>
-    <PackageVersion>1.0.2</PackageVersion>
-    <Version>1.0.2</Version>
+    <AssemblyVersion>1.0.3</AssemblyVersion>
+    <FileVersion>1.0.3</FileVersion>
+    <PackageVersion>1.0.3</PackageVersion>
+    <Version>1.0.3</Version>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
