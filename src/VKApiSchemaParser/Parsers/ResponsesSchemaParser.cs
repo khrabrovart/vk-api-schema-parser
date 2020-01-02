@@ -20,13 +20,10 @@ namespace VKApiSchemaParser.Parsers
 
         protected override IDictionary<string, ApiObject> ParseSchema(JSchema schema)
         {
-            var definitions = schema.ExtensionData[JsonStringConstants.Definitions];
-
-            var objectsDictionary = definitions
+            return schema
+                .ExtensionData[JsonStringConstants.Definitions]
                 .Select(d => ParseObject(d.First, ObjectParserOptions.NamedAndRegistered))
                 .ToDictionary(obj => obj.Name);
-
-            return objectsDictionary;
         }
 
         protected override ApiObject ResolveReference(string referencePath)

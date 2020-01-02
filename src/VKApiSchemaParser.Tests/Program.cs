@@ -1,14 +1,23 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using VKApiSchemaParser.Models.Schemas;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace VKApiSchemaParser.Tests
 {
     public class Program
     {
         private const string OutputDirectory = "parsed";
+
+        private static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings
+        {
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            NullValueHandling = NullValueHandling.Ignore,
+            DefaultValueHandling = DefaultValueHandling.Ignore,
+            Converters = new List<JsonConverter> { new StringEnumConverter() }
+        };
 
         public static async Task Main()
         {
@@ -17,62 +26,32 @@ namespace VKApiSchemaParser.Tests
                 Directory.CreateDirectory(OutputDirectory);
             }
 
-			try
-			{
-				var schema = await VKApiSchema.ParseAsync();
-
-				Console.WriteLine("Schema processed");
-
-				Console.WriteLine("Processing objects...");
-				await CheckObjects(schema);
-
-				Console.WriteLine("Processing responses...");
-				await CheckResonses(schema);
-
-				Console.WriteLine("Processing methods...");
-				await CheckMethods(schema);
-			}
-			catch (Exception ex)
-			{ 
-				Console.WriteLine($"Exception occured! {ex.Message}");
-			}
-        }
-
-        public static async Task CheckObjects(ApiSchema schema)
-        {
-            var objects = schema.Objects;
-            var serializedSchema = SerializeObject(objects);
-            await SaveToFileAsync(serializedSchema, "objects");
-        }
-
-        public static async Task CheckResonses(ApiSchema schema)
-        {
-            var responses = schema.Responses;
-            var serializedSchema = SerializeObject(responses);
-            await SaveToFileAsync(serializedSchema, "responses");
-        }
-
-        public static async Task CheckMethods(ApiSchema schema)
-        {
-            var methods = schema.Methods;
-            var serializedSchema = SerializeObject(methods);
-            await SaveToFileAsync(serializedSchema, "methods");
-        }
-
-        private static string SerializeObject(object schema)
-        {
-            return JsonConvert.SerializeObject(schema, new JsonSerializerSettings
+            try
             {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                NullValueHandling = NullValueHandling.Ignore,
-                DefaultValueHandling = DefaultValueHandling.Ignore
-            });
+                var schema = await VKApiSchema.ParseAsync();
+
+                Console.WriteLine("Schema parsed");
+
+                await SerializeAndSave(schema.Objects, "objects");
+                await SerializeAndSave(schema.Responses, "responses");
+                await SerializeAndSave(schema.Methods, "methods");
+
+                Console.WriteLine($"\nComplete! Check \"{OutputDirectory}\" directory for output files.\nPress any key to exit...");
+                Console.ReadKey();
+            }
+            catch (Exception ex)
+            { 
+                Console.WriteLine(ex);
+                Console.ReadKey();
+            }
         }
 
-        private static async Task SaveToFileAsync(string data, string prefix)
+        public static Task SerializeAndSave(object obj, string name)
         {
-            var filePath = $"{OutputDirectory}\\{prefix}.json";
-            await File.WriteAllTextAsync(filePath, data);
+            Console.WriteLine($"Processing {name}");
+            return SaveToFileAsync(JsonConvert.SerializeObject(obj, SerializerSettings), name);
         }
+
+        private static Task SaveToFileAsync(string data, string prefix) => File.WriteAllTextAsync($"{OutputDirectory}\\{prefix}.json", data);
     }
 }

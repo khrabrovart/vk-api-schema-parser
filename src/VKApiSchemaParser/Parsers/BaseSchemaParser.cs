@@ -33,9 +33,7 @@ namespace VKApiSchemaParser.Parsers
         }
 
         protected abstract T ParseSchema(JSchema schema);
-
         protected abstract ApiObject ResolveReference(string referencePath);
-
         protected abstract ApiObject ParseObject(JToken token, ObjectParserOptions options);
 
         protected ApiObject ParseNestedObject(JToken token)
@@ -72,7 +70,7 @@ namespace VKApiSchemaParser.Parsers
             var requiredProperties = token.GetPropertyAsArray(JsonStringConstants.Required)?.ToArray();
 
             obj.Properties = GetProperties(token, JsonStringConstants.Properties, requiredProperties);
-            obj.PatternProperties = GetProperties(token, JsonStringConstants.PatternProperties, requiredProperties);
+            obj.PatternProperties = GetProperties(token, JsonStringConstants.PatternProperties, requiredProperties); // TODO: Check this property parsing
 
             obj.MinProperties = token.GetPropertyAsInteger(JsonStringConstants.MinProperties);
             obj.MaxProperties = token.GetPropertyAsInteger(JsonStringConstants.MaxProperties);

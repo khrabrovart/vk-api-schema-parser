@@ -89,15 +89,15 @@ namespace VKApiSchemaParser.Parsers
 
         private ApiMethod ParseMethod(JToken token)
         {
-            var method = new ApiMethod();
-
             var name = token.GetPropertyAsString(JsonStringConstants.Name);
             var splittedName = name.Split('.');
-
-            method.FullName = name;
-            method.Group = splittedName[0];
-            method.Name = splittedName[1];
-            method.Description = token.GetPropertyAsString(JsonStringConstants.Description);
+            var method = new ApiMethod
+            {
+                FullName = name,
+                Category = splittedName[0],
+                Name = splittedName[1],
+                Description = token.GetPropertyAsString(JsonStringConstants.Description)
+            };
 
             var accessTokenTypesString = token.GetPropertyAsString(JsonStringConstants.AccessTokenType);
             if (!string.IsNullOrWhiteSpace(accessTokenTypesString))
@@ -122,31 +122,27 @@ namespace VKApiSchemaParser.Parsers
 
         private ApiMethodParameter ParseMethodParameter(JToken token)
         {
-            var parameter = new ApiMethodParameter();
-
             var name = token.GetPropertyAsString(JsonStringConstants.Name);
-
-            parameter.Name = name;
-
             var type = token.GetPropertyAsArray(JsonStringConstants.Type)?.Count() > 1 ?
                 JsonStringConstants.Multiple :
                 token.GetPropertyAsString(JsonStringConstants.Type);
 
-            parameter.Type = ObjectTypeMapper.Map(type);
-
-            parameter.Description = token.GetPropertyAsString(JsonStringConstants.Description);
-            parameter.Enum = token.GetPropertyAsArray(JsonStringConstants.Enum);
-            parameter.EnumNames = token.GetPropertyAsArray(JsonStringConstants.EnumNames);
-            parameter.Minimum = token.GetPropertyAsInteger(JsonStringConstants.Minimum);
-            parameter.Maximum = token.GetPropertyAsInteger(JsonStringConstants.Maximum);
-            parameter.Default = token.GetPropertyAsString(JsonStringConstants.Default);
-            parameter.MinLength = token.GetPropertyAsInteger(JsonStringConstants.MinLength);
-            parameter.MaxLength = token.GetPropertyAsInteger(JsonStringConstants.MaxLength);
-            parameter.MaxItems = token.GetPropertyAsInteger(JsonStringConstants.MaxItems);
-            parameter.Items = token.SelectPropertyValueOrDefault(JsonStringConstants.Items, ParseNestedObject);
-            parameter.IsRequired = token.GetPropertyAsBoolean(JsonStringConstants.Required) == true;
-
-            return parameter;
+            return new ApiMethodParameter
+            {
+                Name = name,
+                Type = ObjectTypeMapper.Map(type),
+                Description = token.GetPropertyAsString(JsonStringConstants.Description),
+                Enum = token.GetPropertyAsArray(JsonStringConstants.Enum),
+                EnumNames = token.GetPropertyAsArray(JsonStringConstants.EnumNames),
+                Minimum = token.GetPropertyAsInteger(JsonStringConstants.Minimum),
+                Maximum = token.GetPropertyAsInteger(JsonStringConstants.Maximum),
+                Default = token.GetPropertyAsString(JsonStringConstants.Default),
+                MinLength = token.GetPropertyAsInteger(JsonStringConstants.MinLength),
+                MaxLength = token.GetPropertyAsInteger(JsonStringConstants.MaxLength),
+                MaxItems = token.GetPropertyAsInteger(JsonStringConstants.MaxItems),
+                Items = token.SelectPropertyValueOrDefault(JsonStringConstants.Items, ParseNestedObject),
+                IsRequired = token.GetPropertyAsBoolean(JsonStringConstants.Required) == true
+            };
         }
     }
 }

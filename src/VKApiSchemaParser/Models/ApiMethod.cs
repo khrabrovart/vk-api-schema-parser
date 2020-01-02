@@ -8,9 +8,9 @@ namespace VKApiSchemaParser.Models
     public class ApiMethod
     {
         /// <summary>
-        /// Gets or sets method's group name.
+        /// Gets or sets method's category name.
         /// </summary>
-        public string Group { get; set; }
+        public string Category { get; set; }
 
         /// <summary>
         /// Gets or sets method's name.

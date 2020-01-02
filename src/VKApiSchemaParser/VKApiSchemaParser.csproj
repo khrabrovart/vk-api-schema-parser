@@ -16,8 +16,8 @@
     <PackageReleaseNotes>
 Documentation: https://github.com/khrabrovart/vk-api-schema-parser
     </PackageReleaseNotes>
-    <Copyright>Copyright 2019 (C) Arthur Khrabrov. All rights reserved.</Copyright>
-    <PackageTags>vk api json schema vkapi parser converter</PackageTags>
+    <Copyright>Copyright 2020 (C) Arthur Khrabrov. All rights reserved.</Copyright>
+    <PackageTags>vk vkontakte api json schema vkapi parser converter</PackageTags>
     <PackageLicenseUrl>https://github.com/khrabrovart/vk-api-schema-parser/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/khrabrovart/vk-api-schema-parser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -25,10 +25,10 @@ Documentation: https://github.com/khrabrovart/vk-api-schema-parser
     <IncludeSource>True</IncludeSource>
     <IncludeSymbols>True</IncludeSymbols>
     
-    <AssemblyVersion>1.0.4</AssemblyVersion>
-    <FileVersion>1.0.4</FileVersion>
-    <PackageVersion>1.0.4</PackageVersion>
-    <Version>1.0.4</Version>
+    <AssemblyVersion>1.0.5</AssemblyVersion>
+    <FileVersion>1.0.5</FileVersion>
+    <PackageVersion>1.0.5</PackageVersion>
+    <Version>1.0.5</Version>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
