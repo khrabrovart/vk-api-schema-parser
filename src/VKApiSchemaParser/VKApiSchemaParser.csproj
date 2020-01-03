@@ -25,10 +25,10 @@ Documentation: https://github.com/khrabrovart/vk-api-schema-parser
     <IncludeSource>True</IncludeSource>
     <IncludeSymbols>True</IncludeSymbols>
     
-    <AssemblyVersion>1.0.5</AssemblyVersion>
-    <FileVersion>1.0.5</FileVersion>
-    <PackageVersion>1.0.5</PackageVersion>
-    <Version>1.0.5</Version>
+    <AssemblyVersion>1.0.6</AssemblyVersion>
+    <FileVersion>1.0.6</FileVersion>
+    <PackageVersion>1.0.6</PackageVersion>
+    <Version>1.0.6</Version>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net461'">

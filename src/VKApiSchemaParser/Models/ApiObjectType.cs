@@ -1,7 +1,7 @@
 ﻿namespace VKApiSchemaParser.Models
 {
     /// <summary>
-    /// Represents API object type.
+    /// Represents an API object type.
     /// </summary>
     public enum ApiObjectType
     {

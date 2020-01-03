@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using VKApiSchemaParser.Models;
 
 namespace VKApiSchemaParser.Tests
 {
@@ -46,7 +47,7 @@ namespace VKApiSchemaParser.Tests
             }
         }
 
-        public static Task SerializeAndSave(object obj, string name)
+        public static Task SerializeAndSave<T>(IDictionary<string, T> obj, string name) where T : IApiEntity
         {
             Console.WriteLine($"Processing {name}");
             return SaveToFileAsync(JsonConvert.SerializeObject(obj, SerializerSettings), name);

@@ -1,7 +1,7 @@
 ﻿namespace VKApiSchemaParser.Models
 {
     /// <summary>
-    /// Represents API access token type.
+    /// Represents an API access token type.
     /// </summary>
     public enum ApiAccessTokenType
     {

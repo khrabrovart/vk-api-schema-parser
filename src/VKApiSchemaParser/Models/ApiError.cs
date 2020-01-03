@@ -1,9 +1,9 @@
 ﻿namespace VKApiSchemaParser.Models
 {
     /// <summary>
-    /// Represents API error object.
+    /// Represents an API error object.
     /// </summary>
-    public class ApiError
+    public class ApiError : IApiEntity
     {
         /// <summary>
         /// Gets or sets error's name.

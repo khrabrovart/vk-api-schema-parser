@@ -1,7 +1,7 @@
 ﻿namespace VKApiSchemaParser.Models
 {
     /// <summary>
-    /// Represents API string format.
+    /// Represents an API string format.
     /// </summary>
     public enum ApiStringFormat
     {

@@ -3,9 +3,9 @@
 namespace VKApiSchemaParser.Models
 {
     /// <summary>
-    /// Represents API method.
+    /// Represents an API method.
     /// </summary>
-    public class ApiMethod
+    public class ApiMethod : IApiEntity
     {
         /// <summary>
         /// Gets or sets method's category name.

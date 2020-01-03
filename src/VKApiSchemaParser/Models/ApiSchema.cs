@@ -3,7 +3,7 @@
 namespace VKApiSchemaParser.Models.Schemas
 {
     /// <summary>
-    /// Represents API schema content.
+    /// Represents an API schema content.
     /// </summary>
     public class ApiSchema
     {
