@@ -38,7 +38,7 @@ namespace VKApiSchemaParser.Parsers
 
         protected ApiObject ParseNestedObject(JToken token)
         {
-            // TODO: remove this check when "notifications_get_response" "items" property will NOT be an empty array
+            // TODO: Remove this check when "notifications_get_response" "items" property will NOT be an empty array
             if (!token.Any())
             {
                 return null;
@@ -70,7 +70,7 @@ namespace VKApiSchemaParser.Parsers
             var requiredProperties = token.GetPropertyAsArray(JsonStringConstants.Required)?.ToArray();
 
             obj.Properties = GetProperties(token, JsonStringConstants.Properties, requiredProperties);
-            obj.PatternProperties = GetProperties(token, JsonStringConstants.PatternProperties, requiredProperties); // TODO: Check this property parsing
+            obj.PatternProperties = GetProperties(token, JsonStringConstants.PatternProperties, requiredProperties);
 
             obj.MinProperties = token.GetPropertyAsInteger(JsonStringConstants.MinProperties);
             obj.MaxProperties = token.GetPropertyAsInteger(JsonStringConstants.MaxProperties);

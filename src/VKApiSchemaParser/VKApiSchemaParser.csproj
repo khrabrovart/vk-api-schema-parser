@@ -8,7 +8,9 @@
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <PackageId>VKApiSchemaParser</PackageId>
     <Title>VK (originally VKontakte) API Schema Parser</Title>
-    <Description>Easy-to-use VK (originally VKontakte) API schema converter for .NET</Description>
+    <Description>
+Easy-to-use VK (originally VKontakte) API schema parser that gives you back a bunch of ordinary .NET objects kindly prepared for futher processing
+		</Description>
     <Authors>Arthur Khrabrov</Authors>
     <Owners>Arthur Khrabrov</Owners>
     <PackageIconUrl>https://github.com/khrabrovart/vk-api-schema-parser/blob/master/icon.png?raw=true</PackageIconUrl>
@@ -25,10 +27,10 @@ Documentation: https://github.com/khrabrovart/vk-api-schema-parser
     <IncludeSource>True</IncludeSource>
     <IncludeSymbols>True</IncludeSymbols>
     
-    <AssemblyVersion>1.0.6</AssemblyVersion>
-    <FileVersion>1.0.6</FileVersion>
-    <PackageVersion>1.0.6</PackageVersion>
-    <Version>1.0.6</Version>
+    <AssemblyVersion>1.0.7</AssemblyVersion>
+    <FileVersion>1.0.7</FileVersion>
+    <PackageVersion>1.0.7</PackageVersion>
+    <Version>1.0.7</Version>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net461'">

@@ -70,7 +70,12 @@ namespace VKApiSchemaParser.Parsers
             // All registered objects have names. Objects without names cannot be registered.
             if (options >= ObjectParserOptions.Named)
             {
-                var name = token.Path.Split('.').LastOrDefault();
+                // TODO: Really shitty behaviour caused by "patternProperties".
+                // Token path contains "['...']" instead of "." in case if token name is not a regular string.
+                // Need refactor someday!
+                var name = token.Path.Contains("['") 
+                    ? GetTokenNameFromAbnormalPath(token.Path)
+                    : token.Path.Split('.').LastOrDefault();
 
                 if (string.IsNullOrWhiteSpace(name))
                 {
@@ -81,6 +86,14 @@ namespace VKApiSchemaParser.Parsers
             }
 
             return obj;
+        }
+
+        private string GetTokenNameFromAbnormalPath(string path)
+        {
+            var firstApostropheIndex = path.IndexOf('\'');
+            var lastApostropheIndex = path.LastIndexOf('\'');
+
+            return path.Substring(firstApostropheIndex + 1, lastApostropheIndex - (firstApostropheIndex + 1));
         }
     }
 }
