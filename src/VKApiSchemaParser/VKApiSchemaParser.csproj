@@ -10,7 +10,7 @@
     <Title>VK (originally VKontakte) API Schema Parser</Title>
     <Description>
 Easy-to-use VK (originally VKontakte) API schema parser that gives you back a bunch of ordinary .NET objects kindly prepared for futher processing
-		</Description>
+    </Description>
     <Authors>Arthur Khrabrov</Authors>
     <Owners>Arthur Khrabrov</Owners>
     <PackageIconUrl>https://github.com/khrabrovart/vk-api-schema-parser/blob/master/icon.png?raw=true</PackageIconUrl>
