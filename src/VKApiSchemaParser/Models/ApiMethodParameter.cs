@@ -5,7 +5,7 @@ namespace VKApiSchemaParser.Models
     /// <summary>
     /// Represents an API method parameter.
     /// </summary>
-    public class ApiMethodParameter : IApiEntity
+    public class ApiMethodParameter : IApiEnumEntity
     {
         /// <summary>
         /// Gets or sets object's name.

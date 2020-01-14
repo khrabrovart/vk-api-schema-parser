@@ -5,7 +5,7 @@ namespace VKApiSchemaParser.Models
     /// <summary>
     /// Represents an Object in the API schema.
     /// </summary>
-    public class ApiObject : IApiEntity
+    public class ApiObject : IApiEnumEntity
     {
         /// <summary>
         /// Gets or sets object's name.
